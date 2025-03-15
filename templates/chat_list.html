@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat List</title>
+</head>
+<body>
+    <h1>Chat List</h1>
+    <ul>
+        {% for chat in chats %}
+            <li><a href="{% url 'chat_detail' chat.id %}">Chat with {{ chat.expert.username }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

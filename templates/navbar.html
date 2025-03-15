@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Navigation System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        /* Design System */
+        :root {
+            --primary-500: #9625af;
+            --primary-600: #ca2fc7;
+            --surface-100: #f8fafc;
+            --surface-900: #0f172a;
+            --text-primary: #1e293b;
+            --text-inverse: #ffffff;
+            --transition-default: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--surface-100);
+            color: var(--text-primary);
+        }
+
+        /* Navigation Container */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            background: linear-gradient(135deg, #4b0082, #6a0dad);
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* User Profile Section */
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-inverse);
+            position: relative;
+        }
+
+        .profile__image {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: transform var(--transition-default);
+        }
+
+        .profile:hover .profile__image {
+            transform: scale(1.05);
+        }
+
+        .profile__name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: -0.2px;
+        }
+
+        /* Navigation Links */
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            transition: transform var(--transition-default);
+        }
+
+        .nav-link {
+            color: var(--text-inverse);
+            text-decoration: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all var(--transition-default);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--text-inverse);
+            transition: all var(--transition-default);
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        /* Logout Button */
+        .logout {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-600);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all var(--transition-default);
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .logout:hover {
+            background: var(--text-inverse);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Mobile Navigation */
+        .hamburger {
+            display: none;
+            color: var(--text-inverse);
+            font-size: 1.6rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 1.5rem;
+                height: 64px;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 64px);
+                background: linear-gradient(135deg, #4b0082, #6a0dad);
+                backdrop-filter: blur(15px);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            .profile__name {
+                display: none;
+            }
+
+            .logout {
+                padding: 0.75rem;
+                border-radius: 50%;
+            }
+
+            .logout__text {
+                display: none;
+            }
+        }
+
+        /* Content Area */
+        .content {
+            margin-top: 6rem;
+            padding: 2rem;
+        }
+
+        /* Animations */
+        @keyframes navItemEnter {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-links.active .nav-link {
+            animation: navItemEnter 0.4s ease forwards;
+        }
+
+        .nav-links.active .nav-link:nth-child(1) { animation-delay: 0.1s; }
+        .nav-links.active .nav-link:nth-child(2) { animation-delay: 0.2s; }
+        .nav-links.active .nav-link:nth-child(3) { animation-delay: 0.3s; }
+        .nav-links.active .nav-link:nth-child(4) { animation-delay: 0.4s; }
+        .nav-links.active .nav-link:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <i class="fas fa-bars hamburger"></i>
+        
+        <div class="profile">
+            <img src="{{ user.profile_image.url }}" 
+                 class="profile__image"
+                 onerror="this.onerror=null; this.src='/media/profile_pics/p.png';" 
+                 alt="User profile">
+            <span class="profile__name">{{ user.username }}</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'dashboard' %}" class="nav-link">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'projects_list' %}" class="nav-link">
+                <i class="fas fa-folder-open"></i>
+                <span>Projects</span>
+            </a>
+            <a href="{% url 'meeting_list' %}" class="nav-link">
+                <i class="fas fa-video"></i>
+                <span>Meetings</span>
+            </a>
+            <a href="{% url 'chat_list' %}" class="nav-link">
+                <i class="fas fa-comments"></i>
+                <span>Chat</span>
+            </a>
+            <a href="{% url 'settings' %}" class="nav-link">
+                <i class="fas fa-cogs"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <form id="logout-form" action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="logout__text">Logout</span>
+            </button>
+        </form>
+    </nav>
+
+    <script>
+        // Mobile Navigation Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-links') && 
+                !e.target.closest('.hamburger') &&
+                navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Smooth scroll behavior
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

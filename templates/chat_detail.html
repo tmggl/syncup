@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with {{ chat.expert.username }}</title>
+</head>
+<body>
+    <h1>Chat with {{ chat.expert.username }}</h1>
+    <ul>
+        {% for message in messages %}
+            <li><strong>{{ message.sender.username }}:</strong> {{ message.content }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

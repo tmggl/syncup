@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyncUp - Team Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4b0082;
+            --secondary-color: #6a1b9a;
+            --accent-color: #007bff;
+            --text-color: #2d2d2d;
+            --background-color: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+        }
+
+        .navbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: var(--text-color);
+            margin: 0 1rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 6rem 1.5rem;
+            margin: 2rem 1rem;
+            border-radius: 15px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .features {
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+        }
+
+        .feature-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .feature {
+            background: var(--card-bg);
+            padding: 2.5rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            background: #f0e6ff;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+        }
+
+        .feature p {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .footer {
+            background: #001f3f;
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+            margin-top: 5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer a:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1.5rem;
+                text-align: center;
+            }
+            
+            .hero {
+                padding: 4rem 1rem;
+                margin: 1rem 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.5rem;
+            }
+            
+            .features h2 {
+                font-size: 1.6rem;
+            }
+            
+            .feature-icon {
+                font-size: 2rem;
+                width: 60px;
+                height: 60px;
+                line-height: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar a {
+                margin: 0.5rem;
+                display: block;
+            }
+            
+            .hero {
+                padding: 3rem 1rem;
+            }
+            
+            .feature-box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div>
+            <a href="#">SyncUp</a>
+            <a href="#">Home</a>
+            <a href="#">Features</a>
+            <a href="#">About</a>
+            <a href="#">Help</a>
+        </div>
+        <div>
+            <a href="{% url 'login' %}" class="btn">Login</a>
+            <a href="{% url 'register' %}" class="btn">Sign Up</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Where Teams Connect, Collaborate, and Succeed</h1>
+        <p>Take the first step toward better team management - Start Now</p>
+        <a href="{% url 'register' %}" class="btn">Get Started Free</a>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features">
+        <h2>Why Choose SyncUp?</h2>
+        <div class="feature-box">
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-toolbox"></i>
+                </div>
+                <p>All project tools in one unified platform</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <p>Real-time team meetings & collaboration</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <p>Expert guidance & best practices</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <p>Intuitive user experience</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-links">
+            <a href="#">Support</a>
+            <a href="#">Company</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
+        </div>
+        <p>Terms of Service | Privacy Policy</p>
+        <p>© 2023 SyncUp. All rights reserved</p>
+    </div>
+</body>
+</html>

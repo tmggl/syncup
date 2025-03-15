@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Overview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #380c52;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --background: #f8fafc;
+        }
+
+        body {
+            background: var(--background);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 80px; /* ✅ إزاحة للأسفل لتجنب تداخل الشريط العلوي */
+        }
+
+        /* ✅ ترحيب المستخدم */
+        .welcome-section {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .welcome-section p {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        /* ✅ نظام الشبكة للكروت */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: left; /* ✅ محاذاة كل النصوص لليسار */
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ✅ تصميم الإحصائيات */
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .stats-card h2 {
+            font-size: 24px;
+        }
+
+        .stats-card p {
+            font-size: 16px;
+        }
+
+        /* ✅ زر عرض المشاريع بمحاذاة اليسار */
+        .view-projects-btn {
+            background: white;
+            color: var(--primary);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            width: fit-content;
+            margin-top: 10px;
+            border: 2px solid var(--primary);
+            transition: all 0.3s ease;
+            text-align: left; /* ✅ محاذاة الزر لليسار */
+        }
+
+        .view-projects-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ✅ كرت المهام والاجتماعات */
+        .task-meeting-card {
+            grid-column: span 2;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: left; /* ✅ محاذاة كل النصوص لليسار */
+        }
+
+        .task-meeting-card h3 {
+            font-size: 20px;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .task-list, .meeting-list {
+            margin-bottom: 1rem;
+        }
+
+        .task-item, .meeting-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .task-item span, .meeting-item span {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+                padding-top: 90px; /* ✅ التأكد من عدم تغطية المحتوى بالشريط العلوي */
+            }
+
+            .task-meeting-card {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}  <!-- ✅ تضمين الشريط العلوي -->
+
+<div class="dashboard-container">
+    <!-- ✅ ترحيب المستخدم -->
+    <div class="welcome-section">
+        <h1>Hello, {{ user.username }} 👋</h1>
+        <p>Welcome to your professional dashboard!</p>
+    </div>
+
+    <!-- ✅ كروت الإحصائيات -->
+    <div class="cards-grid">
+        <!-- ✅ كرت "مشاريعي" مع زر التوجيه لليسار -->
+        <div class="dashboard-card stats-card">
+            <h2>My Projects</h2>
+            <p>{{ projects_count }}</p>  <!-- ✅ عدد المشاريع -->
+            <a href="{% url 'projects_list' %}" class="view-projects-btn">View Projects</a>
+        </div>
+
+        <!-- ✅ كرت المهام المكتملة -->
+        <div class="dashboard-card stats-card">
+            <h2>Completed Tasks</h2>
+            <p>{{ completed_tasks_count }}</p>
+        </div>
+
+        <!-- ✅ كرت المهام المتبقية -->
+        <div class="dashboard-card stats-card">
+            <h2>Pending Tasks</h2>
+            <p>{{ pending_tasks_count }}</p>
+        </div>
+
+        <!-- ✅ كرت تقييم المستخدم -->
+        <div class="dashboard-card stats-card">
+            <h2>Your Rating</h2>
+            <p>⭐ {{ user_rating }}/5</p>
+        </div>
+
+        <!-- ✅ كرت المهام والاجتماعات القادمة -->
+        <div class="dashboard-card task-meeting-card">
+            <h3>Today's Tasks & Meetings</h3>
+            
+            <div class="task-list">
+                <h4>Tasks:</h4>
+                {% for task in tasks_today %}
+                    <div class="task-item">
+                        <span>{{ task.title }}</span>
+                        <span>{{ task.due_date }}</span>
+                    </div>
+                {% empty %}
+                    <p>No tasks for today.</p>
+                {% endfor %}
+            </div>
+
+            <div class="meeting-list">
+                <h4>Meetings:</h4>
+                {% for meeting in meetings_today %}
+                    <div class="meeting-item">
+                        <span>{{ meeting.title }}</span>
+                        <span>{{ meeting.date|date:"M d, Y" }} - {{ meeting.time }}</span>
+                    </div>
+                {% empty %}
+                    <p>No meetings scheduled.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

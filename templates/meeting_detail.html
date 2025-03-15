@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ meeting.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .participants-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .participants-list li {
+            background: #e9ecef;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .join-button {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .join-button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>{{ meeting.title }}</h1>
+        <p><strong>التفاصيل:</strong> {{ meeting.description }}</p>
+        <p><strong>التاريخ:</strong> {{ meeting.date }}</p>
+        <p><strong>الوقت:</strong> {{ meeting.time }}</p>
+        {% if meeting.expert %}
+            <p><strong>الخبير:</strong> {{ meeting.expert.username }}</p>
+        {% endif %}
+        <h2>المشاركون</h2>
+        <ul class="participants-list">
+            {% for participant in meeting.participants.all %}
+                <li>{{ participant.username }}</li>
+            {% endfor %}
+        </ul>
+        {% if meeting.meeting_link %}
+            <a href="{{ meeting.meeting_link }}" target="_blank" class="join-button">🔗 دخول الاجتماع</a>
+        {% endif %}
+    </div>
+
+</body>
+</html>

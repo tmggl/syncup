@@ -1,0 +1,23 @@
+<div class="container">
+    <h2>Received & Sent Requests</h2>
+    <div>
+        <h3>Received Requests</h3>
+        {% if received_requests %}
+            {% for request in received_requests %}
+                <p>{{ request.user.username }} wants to join {{ request.project.name }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No received requests.</p>
+        {% endif %}
+    </div>
+    <div>
+        <h3>Sent Requests</h3>
+        {% if sent_requests %}
+            {% for request in sent_requests %}
+                <p>You requested to join {{ request.project.name }} (Status: {{ request.status }})</p>
+            {% endfor %}
+        {% else %}
+            <p>No sent requests.</p>
+        {% endif %}
+    </div>
+</div>

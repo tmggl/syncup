@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Account Settings</title>
+        <style>
+            /* ✅ تحسين تصميم الصفحة */
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                direction: ltr;
+            }
+    
+            /* ✅ تعديل لضمان عدم التداخل مع الشريط العلوي */
+          /* ✅ تحريك الكرت نفسه للأسفل وعدم تحريك المحتوى فقط */
+/* ✅ تحريك الكرت للأسفل ومنع التصاقه بالشريط السفلي */
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 900px;
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-top: 120px; /* ✅ تحريك الكرت للأسفل */
+    margin-bottom: 120px; /* ✅ إضافة مسافة خارجية بين الكرت والشريط السفلي */
+    padding-top: 2rem; /* ✅ الحفاظ على المسافات الداخلية */
+}
+
+
+    
+            .profile-section {
+                flex: 1;
+                text-align: center;
+            }
+    
+            .form-section {
+                flex: 2;
+            }
+    
+            h1, h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+                text-align: center;
+            }
+    
+            .profile-img {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #4b0082;
+                cursor: pointer;
+                margin-bottom: 10px;
+            }
+    
+            .edit-icon {
+                background: #4b0082;
+                color: white;
+                padding: 8px 12px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                display: inline-block;
+                transition: background 0.3s ease;
+                margin-top: 5px;
+            }
+    
+            .edit-icon:hover {
+                background: #6a0dad;
+            }
+    
+            .input-group {
+                margin-bottom: 1rem;
+                text-align: left;
+            }
+    
+            label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+    
+            input, select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+    
+            button {
+                width: 100%;
+                background: #4b0082;
+                color: white;
+                border: none;
+                padding: 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 1rem;
+                margin-top: 10px;
+            }
+    
+            button:hover {
+                background: #6a0dad;
+            }
+    
+            hr {
+                margin: 20px 0;
+                border: 0;
+                height: 1px;
+                background: #ddd;
+            }
+    
+            /* ✅ تنسيق إشعار الحفظ */
+            .success-card {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+                text-align: center;
+                width: 300px;
+                font-size: 1rem;
+                font-weight: bold;
+                display: none;
+            }
+    
+            .success-card button {
+                background: #4b0082;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 10px;
+            }
+    
+            .success-card button:hover {
+                background: #6a0dad;
+            }
+    
+            /* ✅ تحسين التصميم للأجهزة الصغيرة */
+            @media (max-width: 768px) {
+                .container {
+                    flex-direction: column;
+                    align-items: center;
+                    width: 100%;
+                    padding: 1.5rem;
+                    padding-top: 120px; /* ✅ يمنع التداخل مع الشريط العلوي */
+                }
+    
+                .profile-section {
+                    order: -1;
+                    margin-bottom: 1rem;
+                }
+    
+                h1, h2 {
+                    font-size: 1.3rem;
+                }
+    
+                input, select {
+                    padding: 8px;
+                }
+    
+                button {
+                    padding: 8px;
+                }
+            }
+        </style>
+    </head>    
+<body>
+    <div class="container">
+        {% include 'navbar.html' %}
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <h1>Account Settings</h1>
+            
+            <label for="profileImageUpload">
+                <img id="profilePreview" src="{{ user.profile_image.url }}" 
+                     onerror="this.onerror=null; this.src='/media/profile_pics/p.png';" 
+                     alt="Profile Picture" class="profile-img">
+            </label>
+            
+            <!-- Edit Icon -->
+            <div class="edit-icon">
+                <label for="profileImageUpload">
+                    <i class="fas fa-camera"></i> Change Photo
+                </label>
+            </div>
+            
+            <input type="file" id="profileImageUpload" name="profile_image" accept="image/*" style="display: none;">
+        </div>
+    
+        <!-- Form Section -->
+        <div class="form-section">
+            <form id="accountForm">
+                {% csrf_token %}
+    
+                <div class="input-group">
+                    <label for="id_username">Username</label>
+                    <input type="text" id="id_username" name="username" value="{{ form.username.value }}" required>
+                </div>
+    
+                <div class="input-group">
+                    <label for="id_email">Email</label>
+                    <input type="email" id="id_email" name="email" value="{{ form.email.value }}" required>
+                </div>
+    
+                <div class="input-group">
+                    <label for="id_phone_number">Phone Number</label>
+                    <input type="text" id="id_phone_number" name="phone_number" value="{{ form.phone_number.value }}" required>
+                </div>
+    
+                <div class="input-group">
+                    <label for="id_role">Role</label>
+                    <select id="id_role" name="role">
+                        <option value="expert" {% if form.role.value == 'expert' %}selected{% endif %}>Expert</option>
+                        <option value="member" {% if form.role.value == 'member' %}selected{% endif %}>Team Member</option>
+                    </select>
+                </div>
+    
+                <button type="submit">Save Changes</button>
+            </form>
+    
+            <hr>
+    
+            <!-- Change Password Section -->
+            <h2>Change Password</h2>
+            <form id="passwordForm">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="id_old_password">Current Password</label>
+                    <input type="password" id="id_old_password" name="old_password" required>
+                </div>
+    
+                <div class="input-group">
+                    <label for="id_new_password1">New Password</label>
+                    <input type="password" id="id_new_password1" name="new_password1" required>
+                </div>
+    
+                <div class="input-group">
+                    <label for="id_new_password2">Confirm New Password</label>
+                    <input type="password" id="id_new_password2" name="new_password2" required>
+                </div>
+    
+                <button type="submit">Update Password</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Success Message Card -->
+    <div id="successMessage" class="success-card" style="display: none;">
+        <p>Changes saved successfully! Please refresh the page to see updates.</p>
+        <button onclick="closeSuccessMessage()">Close</button>
+    </div>
+    
+    <script>
+        // ✅ عرض إشعار نجاح مع رسالة مخصصة لكل عملية
+        function showSuccessMessage(message) {
+            const successBox = document.getElementById('successMessage');
+            successBox.innerHTML = `<p>${message}</p><button onclick="closeSuccessMessage()">Close</button>`;
+            successBox.style.display = 'block';
+        }
+    
+        // ✅ إغلاق الإشعار يدويًا
+        function closeSuccessMessage() {
+            document.getElementById('successMessage').style.display = 'none';
+        }
+    
+        // ✅ تحديث صورة البروفايل عند اختيار صورة جديدة دون عرض الإشعار
+        document.getElementById('profileImageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('profile_image', file);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
+                fetch("{% url 'settings' %}", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('profilePreview').src = data.image_url; // ✅ تحديث الصورة فورًا
+                    } else {
+                        showSuccessMessage("Failed to update profile image!");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    showSuccessMessage("An error occurred while updating profile image!");
+                });
+            }
+        });
+    
+        // ✅ حفظ التعديلات عند النقر على زر "Save Changes"
+        document.getElementById('accountForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // ✅ منع إعادة تحميل الصفحة
+    
+            fetch("{% url 'settings' %}", {
+                method: "POST",
+                body: new FormData(this)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessMessage("Changes saved successfully!"); // ✅ عرض الإشعار بعد نجاح الحفظ
+                } else {
+                    showSuccessMessage("Failed to save changes!");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                showSuccessMessage("An error occurred while saving changes!");
+            });
+        });
+    
+        // ✅ حفظ كلمة المرور عند النقر على "Update Password"
+        document.getElementById('passwordForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // ✅ منع إعادة تحميل الصفحة
+    
+            fetch("{% url 'settings' %}", {
+                method: "POST",
+                body: new FormData(this)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessMessage("Password updated successfully!"); // ✅ عرض الإشعار بعد تحديث كلمة المرور
+                } else {
+                    showSuccessMessage("Failed to update password!");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                showSuccessMessage("An error occurred while updating password!");
+            });
+        });
+    </script>
+</body>
+</html>

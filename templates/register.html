@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        /* Modern Page Styling */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: #1f2937;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 440px;
+            width: 90%;
+            margin: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #1f2937;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: #fff;
+            height: 48px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input::placeholder {
+            color: #9ca3af;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+
+        button {
+            width: 100%;
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+            height: 48px;
+        }
+
+        button:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .message::before {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-size: contain;
+        }
+
+        .error {
+            color: #dc2626;
+        }
+
+        .error::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23dc2626'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+        }
+
+        .success {
+            color: #16a34a;
+        }
+
+        .success::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2316a34a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .error-message ul {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            input, select {
+                padding: 0.75rem;
+                height: 44px;
+            }
+
+            button {
+                height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Account</h1>
+    
+        <!-- Profile Image Upload Section -->
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <label for="profileImageUpload">
+                <img id="profilePreview" src="/media/profile_pics/p.png" alt="Profile Image"
+                     style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #6366f1; cursor: pointer;">
+            </label>
+            <input type="file" id="profileImageUpload" name="profile_image" accept="image/*" style="display: none;">
+            <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #6366f1; cursor: pointer;">Click to change</p>
+        </div>
+    
+        <form id="registerForm" method="POST" enctype="multipart/form-data">  <!-- ✅ دعم تحميل الصور -->
+            {% csrf_token %}
+    
+            {% if form.errors %}
+                <div class="error-message">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li><strong>{{ field|title }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+    
+            <div class="input-group">
+                <input type="text" id="username" name="username" placeholder="Username" required>
+                <span id="usernameMessage" class="message"></span>
+            </div>
+    
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Email Address" required>
+            </div>
+    
+            <div class="input-group">
+                <input type="text" id="phone_number" name="phone_number" placeholder="Phone Number (05xxxxxxxx)" required pattern="^05\d{8}$" maxlength="10">
+                <span id="phoneMessage" class="message"></span>
+            </div>
+    
+            <div class="input-group">
+                <select name="role" required>
+                    <option value="" disabled selected>Select Role</option>
+                    <option value="expert">Expert</option>
+                    <option value="member">Member</option>
+                </select>
+            </div>
+    
+            <div class="input-group">
+                <input type="password" id="password1" name="password1" placeholder="Password" required>
+            </div>
+    
+            <div class="input-group">
+                <input type="password" id="password2" name="password2" placeholder="Confirm Password" required>
+                <span id="passwordMessage" class="message"></span>
+            </div>
+    
+            <button type="submit">Sign Up</button>
+        </form>
+    
+        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem;">
+            Already have an account? <a href="{% url 'login' %}">Log in</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            let password1 = document.getElementById('password1').value;
+            let password2 = document.getElementById('password2').value;
+            let passwordMessage = document.getElementById('passwordMessage');
+    
+            if (password1 !== password2) {
+                passwordMessage.textContent = "Passwords do not match!";
+                passwordMessage.style.display = "flex";
+                event.preventDefault();
+            } else {
+                passwordMessage.style.display = "none";
+            }
+        });
+    
+        function checkAvailability(field, messageId, url) {
+            let value = document.getElementById(field).value;
+            let message = document.getElementById(messageId);
+    
+            if (value.length > 0) {
+                fetch(url + "?value=" + value)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            message.textContent = "This " + (field === "username" ? "username" : "phone number") + " is already taken!";
+                            message.classList.add('error');
+                            message.classList.remove('success');
+                        } else {
+                            message.textContent = "Available!";
+                            message.classList.add('success');
+                            message.classList.remove('error');
+                        }
+                        message.style.display = "flex";
+                    });
+            } else {
+                message.style.display = "none";
+            }
+        }
+    
+        document.getElementById('username').addEventListener('input', function() {
+            checkAvailability('username', 'usernameMessage', '/users/check-username/');
+        });
+    
+        document.getElementById('phone_number').addEventListener('input', function() {
+            checkAvailability('phone_number', 'phoneMessage', '/users/check-phone/');
+        });
+    
+        // ✅ تحديث صورة البروفايل عند اختيار صورة جديدة
+        document.getElementById('profileImageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    </body>
+</html>

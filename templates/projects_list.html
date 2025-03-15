@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Projects Management</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+        <style>
+            /* ✅ الأنماط الأساسية */
+            body {
+                font-family: 'Poppins', sans-serif;
+                background: #f5f7fa;
+                margin: 0;
+                padding: 0;
+            }
+    
+            /* ✅ الحاوية الرئيسية */
+            .container {
+                max-width: 1100px;
+                margin: 50px auto;
+                margin-top: 80px;
+                padding: 80px 60px;
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+    
+            /* ✅ تحسين شريط الفلاتر */
+            .filter-bar {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+    
+            .filter-bar span {
+                padding: 10px 20px;
+                border-radius: 20px;
+                background: #f1f3f5;
+                cursor: pointer;
+                font-weight: 500;
+                color: #333;
+                transition: 0.3s;
+            }
+    
+            .filter-bar span.active {
+                background: #6a0dad;
+                color: white;
+                box-shadow: 0 4px 12px rgba(75, 0, 130, 0.3);
+            }
+    
+            /* ✅ بطاقات المشاريع */
+            .project-card {
+                display: flex;
+                position: relative;
+                flex-direction: column;
+                background: white;
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+                transition: transform 0.3s ease;
+                overflow: hidden;
+            }
+    
+            .project-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            }
+    
+            /* ✅ الجزء الجانبي الملون بناءً على لون المشروع */
+            .project-left-bar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 8px;
+                background-color: var(--project-color, #ddd);
+                border-top-left-radius: 12px;
+                border-bottom-left-radius: 12px;
+            }
+    
+            .project-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+    
+            .project-logo {
+                width: 50px;
+                height: 50px;
+                border-radius: 10px;
+                border: 2px solid #ddd;
+            }
+    
+            .project-name {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #333;
+            }
+    
+            .owner-name {
+                font-size: 0.9rem;
+                color: #666;
+                margin-top: 5px;
+            }
+    
+            /* ✅ شريط التقدم */
+            .progress-container {
+                width: 100%;
+                margin-top: 10px;
+            }
+    
+            .progress-bar {
+                width: 100%;
+                height: 10px;
+                background: #e9ecef;
+                border-radius: 5px;
+                overflow: hidden;
+            }
+    
+            .progress {
+                height: 100%;
+                background: linear-gradient(90deg, #6a0dad, #8c43e0);
+                transition: width 0.4s ease;
+            }
+    
+            .progress-text {
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: #6a0dad;
+                margin-top: 5px;
+            }
+    
+            /* ✅ زر الإضافة */
+            .project-btn {
+                position: fixed;
+                bottom: 25px;
+                right: 25px;
+                padding: 14px 30px;
+                border-radius: 50px;
+                font-weight: 600;
+                box-shadow: 0 6px 15px rgba(75, 0, 130, 0.3);
+                background: linear-gradient(135deg, #6a0dad, #8c43e0);
+                color: white;
+                border: none;
+                cursor: pointer;
+                transition: 0.3s ease;
+            }
+    
+            .project-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(75, 0, 130, 0.4);
+            }
+            .alert-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.success-alert button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+    
+            /* ✅ تحسين التصميم للهواتف */
+            @media (max-width: 768px) {
+                .container {
+                    padding: 15px;
+                }
+    
+                .filter-bar {
+                    flex-wrap: wrap;
+                    justify-content: center;
+                }
+    
+                .project-card {
+                    padding: 15px;
+                }
+    
+                .project-btn {
+                    bottom: 15px;
+                    right: 15px;
+                    padding: 12px 25px;
+                }
+            }
+        </style>
+    </head>
+        
+    <body>
+        {% include 'navbar.html' %}
+        {% if messages %}
+<div class="alert-container">
+    {% for message in messages %}
+    <div class="alert success-alert">
+        <span>{{ message }}</span>
+        <button onclick="this.parentElement.style.display='none';">×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+    
+        <button class="project-btn" onclick="openModal()">+ New Project</button>
+    
+        <!-- ✅ Success Message Container -->                    
+        <div class="container">
+            <!-- فلاتر المشاريع -->
+            <div class="filter-bar">
+                <span class="active" onclick="filterProjects('all', this)">All</span>
+                <span onclick="filterProjects('pending', this)">Pending</span>
+                <span onclick="filterProjects('in_progress', this)">Active</span>
+                <span onclick="filterProjects('upcoming', this)">Upcoming</span>
+                <span onclick="filterProjects('completed', this)">Completed</span>
+            </div>
+            <!-- قائمة المشاريع -->
+            <div id="projects-list">
+                {% for project in projects %}
+                <div class="project-card project-{{ project.status }}" data-color="{{ project.project_color }}">
+                    <div class="project-left-bar"></div>  <!-- ✅ جزء اللون الجانبي -->
+                    <div class="project-info">
+                        <div class="project-header">
+                            <!-- ✅ إضافة شعار المشروع -->
+                            {% if project.logo %}
+                                <img src="{{ project.logo.url }}" alt="{{ project.name }}" class="project-logo">
+                            {% else %}
+                                <img src="/static/default_logo.png" alt="Default Logo" class="project-logo">
+                            {% endif %}
+    
+                            <div class="project-name">{{ project.name }}</div>
+                            <a href="{% url 'project_detail' project.id %}" class="settings-btn">
+                                ⚙️
+                            </a>
+                        </div>
+                        
+                        <!-- ✅ عرض مالك المشروع -->
+                        <p class="owner-name">👤 Owned by: <strong>{{ project.owner.username }}</strong></p>
+    
+                        <div class="avatars">
+                            {% for member in project.members.all|slice:":3" %}
+                            <img src="{{ member.profile_image.url }}" alt="{{ member.username }}">
+                            {% endfor %}
+                        </div>
+                        <div class="due-date">⏳ Due: {{ project.end_date|default:"Not Specified" }}</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" data-progress="{{ project.progress|default:0 }}"></div>
+                        </div>
+                        <div class="progress-text">{{ project.progress|default:0 }}% Completed</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    📭 No projects found
+                </div>
+                {% endfor %}
+            </div>
+        <!-- نافذة الإضافة -->
+        <div class="modal-overlay" id="projectModal">
+            <div class="modal">
+                <span class="modal-close" onclick="closeModal()">×</span>
+                <div id="modal-content">
+                    <!-- محتوى النموذج سيتم تحميله هنا -->
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            // ✅ Hide success message after 3 seconds
+            document.addEventListener("DOMContentLoaded", function () {
+                let alertBox = document.querySelector(".alert-container .alert");
+                if (alertBox) {
+                    setTimeout(() => {
+                        alertBox.style.display = "none";
+                    }, 3000);
+                }
+            });
+    
+            // وظائف الفلترة
+            function filterProjects(status, element) {
+                document.querySelectorAll('.filter-bar span').forEach(span => {
+                    span.classList.remove("active");
+                });
+                element.classList.add("active");
+    
+                const projects = document.querySelectorAll(".project-card");
+                let visibleCount = 0;
+    
+                projects.forEach(project => {
+                    const show = status === 'all' || 
+                               project.classList.contains(`project-${status}`);
+                    project.style.display = show ? 'flex' : 'none';
+                    if (show) visibleCount++;
+                });
+    
+                document.getElementById('projects-list').style.display = 
+                    visibleCount > 0 ? 'block' : 'none';
+            }
+    
+            // إدارة النافذة المنبثقة
+            function openModal() {
+                window.location.href = "{% url 'create_project' %}";
+            }
+    
+            function closeModal() {
+                document.getElementById('projectModal').style.display = 'none';
+            }
+    
+            // إغلاق النافذة عند النقر خارجها
+            document.querySelector('.modal-overlay').addEventListener('click', (e) => {
+                if (e.target === document.querySelector('.modal-overlay')) {
+                    closeModal();
+                }
+            });
+    
+            // تهيئة شريط التقدم
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".progress").forEach(progress => {
+                    let progressValue = progress.getAttribute("data-progress");
+                    if (progressValue) {
+                        progress.style.width = progressValue + "%";
+                    }
+                });
+            });
+    
+            // ✅ تطبيق اللون الجانبي للمشاريع بناءً على `data-color`
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".project-card").forEach(card => {
+                    let color = card.getAttribute("data-color");
+                    if (color) {
+                        card.querySelector(".project-left-bar").style.backgroundColor = color;
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>  

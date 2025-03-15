@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة المستخدمين</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .search-box {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .user-list {
+            list-style: none;
+            padding: 0;
+        }
+        .user-item {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .role {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>قائمة المستخدمين</h1>
+        <form method="GET">
+            <input type="text" name="search" class="search-box" placeholder="بحث عن مستخدم..." value="{{ query }}">
+            <button type="submit">بحث</button>
+        </form>
+
+        <ul class="user-list">
+            {% for user in users %}
+                <li class="user-item">
+                    <span>{{ user.username }}</span>
+                    <span class="role">{{ user.role }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>

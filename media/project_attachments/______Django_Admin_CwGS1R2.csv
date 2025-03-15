@@ -1,0 +1,28 @@
+اسم القالب,الوصف
+submit_line.html,تحكم في زر الحفظ والإرسال في النموذج.
+search_form.html,نموذج البحث داخل لوحة الإدارة.
+prepopulated_fields_js.html,ملف JavaScript لملء الحقول تلقائيًا.
+popup_response.html,تحكم في النوافذ المنبثقة داخل الإدارة.
+pagination.html,تحكم في عرض الصفحات إذا كانت القائمة طويلة.
+object_history.html,عرض سجل التغييرات على الكائنات.
+nav_sidebar.html,القائمة الجانبية للتنقل بين التطبيقات.
+login.html,صفحة تسجيل الدخول إلى لوحة الإدارة.
+invalid_setup.html,صفحة عرض الأخطاء عند حدوث مشاكل في الإعدادات.
+index.html,الصفحة الرئيسية للوحة التحكم في Django Admin.
+filter.html,عرض الفلاتر والبحث المتقدم داخل القوائم.
+delete_selected_confirmation.html,تأكيد حذف العناصر المحددة.
+delete_confirmation.html,تأكيد حذف عنصر معين.
+color_theme_toggle.html,زر تبديل الثيمات بين الوضع الفاتح والداكن.
+date_hierarchy.html,عرض التصفية بناءً على التواريخ.
+change_list.html,عرض قائمة العناصر داخل أي تطبيق في Django Admin.
+change_list_results.html,عرض نتائج البحث أو الفلترة في القوائم.
+change_list_object_tools.html,أدوات التحكم في الصفحة الرئيسية لأي قائمة.
+change_form.html,صفحة تعديل أو إضافة عنصر جديد.
+change_form_object_tools.html,أدوات التحكم داخل صفحة تعديل عنصر.
+base.html,القالب الرئيسي الذي يرثه جميع القوالب الأخرى.
+base_site.html,القالب الرئيسي المخصص لموقع Django Admin.
+app_list.html,عرض قائمة التطبيقات المثبتة داخل لوحة التحكم.
+app_index.html,عرض تفاصيل تطبيق معين داخل لوحة التحكم.
+actions.html,إدارة وتنفيذ الإجراءات الجماعية في القوائم.
+500.html,صفحة الخطأ 500 (مشكلة في الخادم).
+404.html,صفحة الخطأ 404 (العنصر غير موجود).

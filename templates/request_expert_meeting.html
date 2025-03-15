@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلب اجتماع مع خبير</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>طلب اجتماع مع خبير</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label>اختر الخبير:</label>
+            <select name="expert">
+                {% for expert in experts %}
+                    <option value="{{ expert.id }}">{{ expert.username }}</option>
+                {% endfor %}
+            </select>
+            <label>التاريخ:</label>
+            <input type="date" name="date">
+            <label>الوقت:</label>
+            <input type="time" name="time">
+            <label>الموضوع:</label>
+            <input type="text" name="subject">
+            <button type="submit">إرسال الطلب</button>
+        </form>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            direction: ltr;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #4b0082, #6a0dad);
+            padding: 20px;
+            height: 100vh;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            transition: transform 0.3s ease-in-out;
+            z-index: 999;
+        }
+
+        /* Profile Section */
+        .sidebar .profile {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .profile img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #ccc;
+            display: block;
+        }
+
+        .sidebar .profile p {
+            margin: 5px 0;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Sidebar Links */
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .sidebar a i {
+            margin-right: 15px;
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .sidebar a:hover, .sidebar .active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .sidebar a:hover i {
+            transform: rotate(15deg);
+        }
+
+        /* Logout Button */
+        .logout {
+            margin-top: auto;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background 0.3s ease;
+        }
+
+        .logout:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        /* Main Content */
+        .content {
+            margin-left: 270px;
+            padding: 30px;
+            width: calc(100% - 270px);
+            box-sizing: border-box;
+        }
+
+        /* Mobile Toggle Button */
+        #menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: #4b0082;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        #menu-toggle .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        #menu-toggle.open .bar:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        #menu-toggle.open .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        #menu-toggle.open .bar:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 80px 20px 20px; /* تعديل الهامش العلوي */
+            }
+
+            #menu-toggle {
+                display: block;
+            }
+
+            /* محاذاة المحتوى الديناميكي */
+            #dynamic-content {
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button id="menu-toggle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="profile">
+            <img src="{{ user.profile_image.url }}" onerror="this.onerror=null; this.src='/media/profile_pics/p.png';" alt="Profile Picture">
+            <p><strong>{{ user.username }}</strong></p>
+            <p>{{ user.email }}</p>
+        </div>
+        <a href="{% url 'projects_list' %}" onclick="loadPage(this.href); return false;"><i class="fas fa-folder"></i> Manage Projects</a>
+        <a href="{% url 'meeting_list' %}" onclick="loadPage(this.href); return false;"><i class="fas fa-video"></i> Manage Meetings</a>
+        <a href="{% url 'join_requests' %}" onclick="loadPage(this.href); return false;"><i class="fas fa-users"></i> Review Join Requests</a>
+        <a href="{% url 'tasks_list' %}" onclick="loadPage(this.href); return false;"><i class="fas fa-tasks"></i> Manage Assigned Tasks</a>
+        <a href="{% url 'settings' %}" onclick="loadPage(this.href); return false;"><i class="fas fa-cog"></i> Settings</a>
+        <a href="{% url 'logout' %}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content" id="main-content">
+        <div id="dynamic-content">
+            <!-- سيتم تحميل المحتوى هنا ديناميكيًا -->
+        </div>
+    </div>
+
+    <script>
+        // Toggle Mobile Menu
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            menuToggle.classList.toggle('open');
+            overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            menuToggle.classList.remove('open');
+            overlay.style.display = 'none';
+        });
+
+        // Close menu when clicking on links (mobile only)
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                    menuToggle.classList.remove('open');
+                    overlay.style.display = 'none';
+                }
+            });
+        });
+
+        // Dynamic Content Loading
+        function loadPage(pageUrl) {
+            fetch(pageUrl)
+                .then(response => response.text())
+                .then(html => {
+                    const content = document.getElementById('dynamic-content');
+                    content.innerHTML = html;
+                    
+                    // استخراج وتنفيذ أي سكربتات مضمّنة في القالب المحمّل
+                    content.querySelectorAll("script").forEach(oldScript => {
+                        const newScript = document.createElement("script");
+                        newScript.textContent = oldScript.textContent;
+                        document.body.appendChild(newScript).parentNode.removeChild(newScript);
+                    });
+                })
+                .catch(error => console.error('Error loading page:', error));
+        }
+
+        // إعادة حساب الحجم عند تغيير اتجاه الشاشة
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('open');
+                menuToggle.classList.remove('open');
+                overlay.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

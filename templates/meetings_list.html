@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meetings List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #45195e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --background: #f8fafc;
+        }
+
+        body {
+            background: var(--background);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 100px auto 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .new-meeting-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .new-meeting-btn:hover {
+            background: var(--secondary);
+        }
+
+        .meeting-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .meeting-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .meeting-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .meeting-info h2 {
+            font-size: 18px;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .meeting-info p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .meeting-time {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--info);
+        }
+
+        .join-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .join-button:hover {
+            background: #0c9c6a;
+        }
+
+        .empty-state {
+            text-align: center;
+            font-size: 16px;
+            color: var(--text-light);
+            padding: 20px;
+            background: #eef2ff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 90px auto 20px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}  <!-- ✅ Include the top navigation bar -->
+
+<div class="container">
+    <div class="header">
+        <h1>Meetings List</h1>
+        <a href="{% url 'create_meeting' %}" class="new-meeting-btn">+ New Meeting</a>
+    </div>
+
+    <div class="meeting-list">
+        {% for meeting in meetings %}
+            <div class="meeting-item">
+                <div class="meeting-info">
+                    <h2><a href="{% url 'meeting_detail' meeting.id %}">{{ meeting.title }}</a></h2>
+                    <p>{{ meeting.description }}</p>
+                </div>
+                <div class="meeting-time">
+                    {{ meeting.date|date:"M d, Y" }} - {{ meeting.time }}
+                </div>
+                {% if meeting.meeting_link %}
+                    <button class="join-button" onclick="joinMeeting('{{ meeting.meeting_link }}')">🔗 Join</button>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                📭 No scheduled meetings
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function joinMeeting(link) {
+        window.open(link, '_blank');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diagrams List</title>
+</head>
+<body>
+    <h1>Diagrams List</h1>
+    <ul>
+        {% for diagram in diagrams %}
+            <li><a href="{% url 'diagram_detail' diagram.id %}">{{ diagram.name }}</a> - Created by: {{ diagram.created_by.username }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

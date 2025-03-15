@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.name }}</title>
+</head>
+<body>
+
+    <h1>{{ project.name }}</h1>
+    <p>{{ project.description }}</p>
+    <p>بداية المشروع: {{ project.start_date }}</p>
+    <p>نهاية المشروع: {{ project.end_date }}</p>
+
+    <a href="{% url 'update_project' project.id %}">تعديل المشروع</a>
+    <a href="{% url 'delete_project' project.id %}">حذف المشروع</a>
+
+</body>
+</html>
