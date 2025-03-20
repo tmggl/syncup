@@ -109,12 +109,57 @@
             }
     
             /* ✅ تصغير ألوان المشروع */
-            .color-select {
-                width: 100%;
-                padding: 0.5rem;
-                border-radius: 6px;
-                font-size: 0.8rem;
-            }
+/* ✅ تنسيق كروت الألوان */
+/* ✅ تنسيق كروت الألوان */
+.color-selection {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem; /* ⬅️ تقليل المسافة بين الألوان */
+    flex-wrap: nowrap;
+    margin-top: 0.5rem;
+}
+
+/* ✅ تنسيق كل كرت */
+.color-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.3rem; /* ⬅️ تصغير التباعد */
+    border: 2px solid transparent;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    width: 50px; /* ⬅️ تصغير عرض الكرت */
+}
+
+/* ✅ تصغير الدائرة الملونة */
+.color-circle {
+    width: 24px; /* ⬅️ تصغير حجم الدائرة */
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+/* ✅ تصغير النص أسفل الدائرة */
+.color-card span {
+    margin-top: 0.3rem; /* ⬅️ تقليل المسافة بين الدائرة والنص */
+    font-size: 0.7rem; /* ⬅️ تصغير النص */
+    font-weight: bold;
+    color: #333;
+}
+
+/* ✅ إخفاء زر الاختيار */
+.color-card input {
+    display: none;
+}
+
+/* ✅ تمييز الدائرة عند التحديد */
+.color-card input:checked + .color-circle {
+    border: 2px solid black;
+    transform: scale(1.1);
+}
     
             /* ✅ تصغير أزرار التحكم */
             .buttons {
@@ -191,12 +236,13 @@
             <div class="form-group">
                 <label>Project Logo</label>
                 <div class="file-upload">
-                    <input type="file" id="id_logo" name="logo" class="file-input">
+                    <input type="file" id="id_logo" name="logo" class="file-input" accept="image/*">
                     <span>📁 Click to upload logo</span>
                 </div>
                 <div id="logo-preview" class="file-preview"></div>
+                <div id="logo-error" class="error-message" style="color: red; font-size: 0.85rem; margin-top: 5px; display: none;"></div>
             </div>
-
+            
             <div class="form-group">
                 <label>Project Name</label>
                 {{ form.name }}
@@ -230,16 +276,40 @@
 
             <div class="form-group">
                 <label>Project Color</label>
-                <select id="projectColor" name="project_color" class="color-select">
-                    <option value="purple" style="background: #6a0dad; color: white;">Purple</option>
-                    <option value="red" style="background: #ff4757; color: white;">Red</option>
-                    <option value="blue" style="background: #1e90ff; color: white;">Blue</option>
-                    <option value="green" style="background: #2ed573; color: white;">Green</option>
-                    <option value="orange" style="background: #ffa502; color: white;">Orange</option>
-                    <option value="pink" style="background: #ff6b81; color: white;">Pink</option>
-                </select>
+                <div class="color-selection">
+                    <label class="color-card">
+                        <input type="radio" name="project_color" value="purple" required>
+                        <div class="color-circle" style="background: #6a0dad;"></div>
+                        <span>Purple</span>
+                    </label>
+                    <label class="color-card">
+                        <input type="radio" name="project_color" value="red">
+                        <div class="color-circle" style="background: #ff4757;"></div>
+                        <span>Red</span>
+                    </label>
+                    <label class="color-card">
+                        <input type="radio" name="project_color" value="blue">
+                        <div class="color-circle" style="background: #1e90ff;"></div>
+                        <span>Blue</span>
+                    </label>
+                    <label class="color-card">
+                        <input type="radio" name="project_color" value="green">
+                        <div class="color-circle" style="background: #2ed573;"></div>
+                        <span>Green</span>
+                    </label>
+                    <label class="color-card">
+                        <input type="radio" name="project_color" value="orange">
+                        <div class="color-circle" style="background: #ffa502;"></div>
+                        <span>Orange</span>
+                    </label>
+                    <label class="color-card">
+                        <input type="radio" name="project_color" value="pink">
+                        <div class="color-circle" style="background: #ff6b81;"></div>
+                        <span>Pink</span>
+                    </label>
+                </div>
             </div>
-
+            
             <div class="buttons">
                 <button type="button" class="btn cancel" onclick="closeModal()">Cancel</button>
                 <button type="submit" class="btn add">Create Project</button>
@@ -248,9 +318,9 @@
     </div>
 
     <script>
-        // ✅ Ensure closeModal() is globally available
+        // ✅ وظيفة إغلاق النافذة
         function closeModal() {
-            window.location.href = "{% url 'projects_list' %}";
+            window.location.replace("{% url 'projects_list' %}");
         }
     
         document.addEventListener("DOMContentLoaded", function() {
@@ -260,23 +330,22 @@
             initializeFormSubmission();
         });
     
-        // ✅ Update color selection dynamically
+        // ✅ تحديث اختيار اللون ديناميكيًا
         function initializeColorSelection() {
-            let colorSelect = document.getElementById("projectColor");
-            let colorText = document.getElementById("colorValue");
-    
-            if (colorSelect && colorText) {
-                colorSelect.addEventListener("change", function() {
-                    let selectedColorName = colorSelect.options[colorSelect.selectedIndex].text;
-                    colorText.textContent = selectedColorName;
+            let colorCards = document.querySelectorAll(".color-card input");
+            colorCards.forEach(card => {
+                card.addEventListener("change", function() {
+                    document.querySelectorAll(".color-circle").forEach(circle => {
+                        circle.style.border = "2px solid rgba(0, 0, 0, 0.2)";
+                    });
+                    this.nextElementSibling.style.border = "2px solid black";
                 });
-            }
+            });
         }
     
-        // ✅ Restrict date selection to prevent past dates
+        // ✅ تقييد اختيار التواريخ لمنع تحديد تواريخ سابقة
         function initializeDateRestrictions() {
             let today = new Date().toISOString().split("T")[0];
-    
             let startDateInput = document.getElementById('id_start_date');
             let endDateInput = document.getElementById('id_end_date');
     
@@ -284,7 +353,7 @@
             if (endDateInput) endDateInput.setAttribute("min", today);
         }
     
-        // ✅ Update file preview dynamically
+        // ✅ عرض أسماء الملفات المحددة في المعاينة
         function displayFileName(input, previewId) {
             let previewContainer = document.getElementById(previewId);
             if (!previewContainer) return;
@@ -293,7 +362,6 @@
     
             if (input.files.length > 0) {
                 previewContainer.style.display = "block";
-    
                 Array.from(input.files).forEach(file => {
                     let fileItem = document.createElement("div");
                     fileItem.style.display = "flex";
@@ -306,7 +374,7 @@
     
                     let fileName = document.createElement("span");
                     fileName.textContent = file.name;
-                    
+    
                     fileItem.appendChild(fileIcon);
                     fileItem.appendChild(fileName);
                     previewContainer.appendChild(fileItem);
@@ -316,7 +384,7 @@
             }
         }
     
-        // ✅ Add listeners to update file previews
+        // ✅ إضافة مستمعي الأحداث للمعاينة التلقائية للملفات المختارة
         function initializeFileUploadListeners() {
             let logoInput = document.getElementById('id_logo');
             let attachmentsInput = document.getElementById('id_attachments');
@@ -334,59 +402,7 @@
             }
         }
     
-        // ✅ Submit form using Fetch and handle success with redirect
-        function initializeFormSubmission() {
-            let form = document.getElementById("createProjectForm");
-            if (!form) return;
-    
-            form.addEventListener("submit", function(event) {
-                event.preventDefault();
-                let formData = new FormData(this);
-    
-                fetch("{% url 'create_project' %}", {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Server Response:", data); // ✅ Log response for debugging
-    
-                    if (data.success && data.redirect_url) {
-                        console.log("Redirecting to:", data.redirect_url);
-                        window.location.href = data.redirect_url;  // ✅ Redirect after successful creation
-                    } else {
-                        showErrorModal("❌ Error saving project. Please check your inputs.");
-                    }
-                })
-                .catch(error => {
-                    console.error("❌ Request Error:", error);
-                    showErrorModal(`❌ An error occurred while connecting to the server. Please try again. ${error.message}`);
-                });
-            });
-        }
-    
-        // ✅ Show error modal for failed requests
-        function showErrorModal(errorMessage) {
-            let errorModal = document.createElement("div");
-            errorModal.classList.add("error-modal-overlay");
-            errorModal.innerHTML = `
-                <div class="error-modal">
-                    <h2>⚠️ Error</h2>
-                    <p>${errorMessage}</p>
-                    <button onclick="this.parentElement.parentElement.remove()" class="error-btn">OK</button>
-                </div>
-            `;
-            document.body.appendChild(errorModal);
-            errorModal.style.display = "flex";
-        }
     </script>
+        
 </body>
 </html>

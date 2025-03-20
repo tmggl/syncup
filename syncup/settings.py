@@ -59,6 +59,8 @@ TEMPLATES = [
     },
 ]
 
+X_FRAME_OPTIONS = 'ALLOWALL'  # يسمح بتحميل القالب داخل iframe
+
 WSGI_APPLICATION = 'syncup.wsgi.application'
 
 # Database

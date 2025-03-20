@@ -1,0 +1,163 @@
+<style>
+    /* الألوان المخصصة */
+    .navbar-custom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: #ffffff; /* لون خلفية الشريط */
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .nav-links-custom {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    /* لون نصوص الروابط فقط */
+    .nav-links-custom a {
+        text-decoration: none;
+        color: #2d2d2d !important; /* لون نصوص الروابط */
+        font-weight: 600;
+        transition: color 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .nav-links-custom a:hover {
+        color: #6a1b9a !important;
+    }
+
+    .buttons-container-custom {
+        display: flex;
+        gap: 1rem;
+    }
+
+    /* أزرار تسجيل الدخول والتسجيل بلون نص مستقل */
+    .btn-custom {
+        background: linear-gradient(45deg, #5e47c2, #781378);
+        color: #ffffff !important; /* لون نص الأزرار مفصول عن الروابط */
+        padding: 0.7rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        border: none !important;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-custom:hover {
+        background: #4b0082 !important;
+        transform: translateY(-2px);
+    }
+
+    /* إجبار لون نص الأزرار وفصله عن باقي النصوص */
+    .btn-custom span {
+        color: #ffffff !important; /* تأكيد أن النص داخل الزر أبيض */
+    }
+
+    .hamburger-custom {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        z-index: 1000;
+    }
+
+    .hamburger-custom svg {
+        width: 28px;
+        height: 28px;
+        fill: #2d2d2d !important; /* لون أيقونة القائمة */
+    }
+
+    .logo-custom {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #6a1b9a !important;
+        margin-right: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .navbar-custom {
+            padding: 1rem;
+        }
+
+        .hamburger-custom {
+            display: block;
+        }
+
+        .nav-links-custom {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: #ffffff !important;
+            flex-direction: column;
+            padding: 2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            gap: 1.5rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        .nav-links-custom.active {
+            display: flex;
+        }
+
+        .buttons-container-custom {
+            flex-direction: column;
+            width: 100%;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-custom {
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<nav class="navbar-custom">
+    <a href="#" class="logo-custom">SyncUp</a>
+
+    <button class="hamburger-custom" onclick="toggleMenu()">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </button>
+
+    <div class="nav-links-custom">
+        <a href="#">Home</a>
+        <a href="#">Features</a>
+        <a href="#">About</a>
+        <a href="#">Help</a>
+        <div class="buttons-container-custom">
+            <a href="{% url 'login' %}" class="btn-custom"><span>Login</span></a>
+            <a href="{% url 'register' %}" class="btn-custom"><span>Sign Up</span></a>
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleMenu() {
+        const navLinks = document.querySelector('.nav-links-custom');
+        navLinks.classList.toggle('active');
+    }
+</script>

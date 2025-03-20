@@ -87,11 +87,12 @@
             }
     
             .project-logo {
-                width: 50px;
-                height: 50px;
-                border-radius: 10px;
-                border: 2px solid #ddd;
-            }
+    width: 50px;
+    height: 50px;
+    border-radius: 8px; /* ✅ زوايا مربعة */
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
     
             .project-name {
                 font-size: 1.2rem;
@@ -100,11 +101,26 @@
             }
     
             .owner-name {
-                font-size: 0.9rem;
-                color: #666;
-                margin-top: 5px;
-            }
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ✅ تصميم كل الصور كدوائر صغيرة */
+.circular-image {
+    width: 35px;  /* ✅ حجم متناسق */
+    height: 35px;
+    border-radius: 50%; /* ✅ تحويل الصورة إلى دائرة */
+    object-fit: cover;
+    border: 2px solid #ddd; /* ✅ إضافة حدود */
+    display: inline-block;
+    vertical-align: middle;
+}
     
+
             /* ✅ شريط التقدم */
             .progress-container {
                 width: 100%;
@@ -182,6 +198,43 @@
     margin-left: 10px;
 }
 
+/* ✅ جعل شعار المالك في الزاوية العلوية اليسرى */
+.project-owner {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ✅ ضبط حجم صورة المالك */
+.project-owner img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+/* ✅ جعل صور الأعضاء في صف أفقي */
+.avatars {
+    display: flex;
+    gap: 5px;  /* ✅ مسافة بين الصور */
+    justify-content: flex-end; /* ✅ محاذاة الصور لليمين */
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+/* ✅ ضبط حجم صور الأعضاء */
+.avatars img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
     
             /* ✅ تحسين التصميم للهواتف */
             @media (max-width: 768px) {
@@ -242,7 +295,7 @@
                         <div class="project-header">
                             <!-- ✅ إضافة شعار المشروع -->
                             {% if project.logo %}
-                                <img src="{{ project.logo.url }}" alt="{{ project.name }}" class="project-logo">
+                                 <img src="{{ project.logo.url }}" alt="{{ project.name }}" class="circular-image">
                             {% else %}
                                 <img src="/static/default_logo.png" alt="Default Logo" class="project-logo">
                             {% endif %}
@@ -254,13 +307,24 @@
                         </div>
                         
                         <!-- ✅ عرض مالك المشروع -->
-                        <p class="owner-name">👤 Owned by: <strong>{{ project.owner.username }}</strong></p>
-    
+                        <p class="owner-name">
+                            {% if project.owner.profile_image %}
+                                <img src="{{ project.owner.profile_image.url }}" alt="{{ project.owner.username }}" class="circular-image">
+                            {% else %}
+                                <img src="/static/default_avatar.png" alt="Default Avatar" class="circular-image">
+                            {% endif %}
+                            <strong>{{ project.owner.username }}</strong>
+                        </p>
+                                                    
                         <div class="avatars">
                             {% for member in project.members.all|slice:":3" %}
-                            <img src="{{ member.profile_image.url }}" alt="{{ member.username }}">
+                                {% if member.profile_image %}
+                                    <img src="{{ member.profile_image.url }}" alt="{{ member.username }}" class="circular-image">
+                                {% else %}
+                                    <img src="/static/default_avatar.png" alt="Default Avatar" class="circular-image">
+                                {% endif %}
                             {% endfor %}
-                        </div>
+                        </div>                                    
                         <div class="due-date">⏳ Due: {{ project.end_date|default:"Not Specified" }}</div>
                     </div>
                     <div class="progress-container">

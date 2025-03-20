@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaboration Management | DevSync</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --surface: #ffffff;
+            --background: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            padding-top: 6rem;
+        }
+
+        /* Header Styles */
+        .management-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .management-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), #4f46e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Tabs Navigation */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .tab-button {
+            padding: 0.75rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            background: var(--surface);
+            color: #64748b;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(99,102,241,0.15);
+        }
+
+        /* Cards Container */
+        .requests-container {
+            background: var(--surface);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        /* Table Styles */
+        .collaboration-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .collaboration-table th,
+        .collaboration-table td {
+            padding: 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .collaboration-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .collaboration-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fef9c3;
+            color: #ca8a04;
+        }
+
+        /* Action Buttons */
+        .actions-container {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-accept {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-reject {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: var(--warning);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+
+        .empty-state p {
+            margin-top: 1rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            .management-header h1 {
+                font-size: 2rem;
+            }
+
+            .tabs-nav {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .collaboration-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .action-btn span {
+                display: none;
+            }
+
+            .action-btn {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <header class="management-header">
+            <h1>Join Requests Management</h1>
+            
+            <div class="tabs-nav">
+                <button class="tab-button active" onclick="showSection('received')">Received</button>
+                <button class="tab-button" onclick="showSection('sent')">Sent</button>
+            </div>
+        </header>
+
+        <!-- Received Invitations Section -->
+        <section id="received-section" class="requests-container">
+            {% if invitations %}
+                <table class="collaboration-table">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Invited By</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invitation in invitations %}
+                        <tr>
+                            <td>{{ invitation.project.name }}</td>
+                            <td>{{ invitation.project.owner.username }}</td>
+                            <td>
+                                <span class="status-badge {% if invitation.status == 'canceled' %}status-canceled{% elif invitation.status == 'pending' %}status-pending{% endif %}">
+                                    {{ invitation.status|title }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions-container">
+                                    {% if invitation.status == 'pending' %}
+                                        <a href="{% url 'respond_to_invitation' invitation.id 'accept' %}" class="action-btn btn-accept">
+                                            ✅ Accept
+                                        </a>
+                                        <a href="{% url 'respond_to_invitation' invitation.id 'reject' %}" class="action-btn btn-reject">
+                                            ❌ Decline
+                                        </a>
+                                    {% else %}
+                                        <span class="status-badge status-canceled">Canceled</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty-state">
+                    <p>No pending invitations found</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Members List with Remove Option -->
+        <h3 style="margin-top: 2rem;">Project Members</h3>
+        <section class="requests-container">
+            <table class="collaboration-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Member</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in user_projects %}
+                        {% for member in project.members.all %}
+                        <tr>
+                            <td>{{ project.name }}</td>
+                            <td>{{ member.username }}</td>
+                            <td>
+                                <a href="{% url 'remove_member' project.id member.id %}" class="action-btn btn-reject">
+                                    🗑 Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sent Requests Section -->
+        <section id="sent-section" class="requests-container" style="display: none;">
+            {% if sent_requests %}
+                <table class="collaboration-table">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Invited User</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in sent_requests %}
+                        <tr>
+                            <td>{{ request.project.name }}</td>
+                            <td>{{ request.invited_user.username }}</td>
+                            <td>
+                                <span class="status-badge {% if request.status == 'canceled' %}status-canceled{% elif request.status == 'pending' %}status-pending{% endif %}">
+                                    {{ request.status|title }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions-container">
+                                    {% if request.status == 'pending' %}
+                                        <a href="{% url 'cancel_join_request' request.id %}" class="action-btn btn-cancel">
+                                            🚫 Cancel
+                                        </a>
+                                    {% else %}
+                                        <span class="status-badge status-canceled">Canceled</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty-state">
+                    <p>No active requests found</p>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+    <script>
+        function showSection(type) {
+            // ✅ الحصول على الأقسام المستهدفة
+            const receivedSection = document.getElementById('received-section');
+            const sentSection = document.getElementById('sent-section');
+    
+            // ✅ التحقق من أن الأقسام موجودة في الصفحة
+            if (!receivedSection || !sentSection) return;
+    
+            // ✅ تبديل عرض الأقسام بناءً على الزر الذي تم النقر عليه
+            receivedSection.style.display = type === 'received' ? 'block' : 'none';
+            sentSection.style.display = type === 'sent' ? 'block' : 'none';
+    
+            // ✅ تحديث حالة الأزرار وتفعيل الزر المحدد
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if ((type === 'received' && btn.textContent.includes('Received')) || 
+                    (type === 'sent' && btn.textContent.includes('Sent'))) {
+                    btn.classList.add('active');
+                }
+            });
+    
+            // ✅ حفظ آخر قسم تم عرضه في `localStorage` حتى يبقى عند إعادة تحميل الصفحة
+            localStorage.setItem('activeTab', type);
+        }
+    
+        // ✅ عند تحميل الصفحة، استرجاع القسم النشط من `localStorage`
+        document.addEventListener('DOMContentLoaded', function() {
+            const activeTab = localStorage.getItem('activeTab') || 'received';  // ✅ تعيين القسم الافتراضي إلى "Received"
+            showSection(activeTab);
+        });
+    </script>    
+
+</body>
+</html>

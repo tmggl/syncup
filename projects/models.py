@@ -62,10 +62,14 @@ class Project(models.Model):
 class ProjectAttachment(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='attachments')
     file = models.FileField(upload_to='project_attachments/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    file_name = models.CharField(max_length=255, blank=False)  # ✅ اسم الملف يُدخله المستخدم
+    description = models.TextField(blank=True, null=True)  # ✅ وصف اختياري
+    uploaded_at = models.DateTimeField(auto_now_add=True)  # ✅ تاريخ الإرفاق تلقائي
+    uploaded_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='uploaded_files')  # ✅ من قام بالرفع
+    is_main_file = models.BooleanField(default=False)  # ✅ تحديد إذا كان ملفًا رئيسيًا أم تحديثًا
 
     def __str__(self):
-        return f"Attachment for {self.project.name} uploaded on {self.uploaded_at}"
+        return f"{self.file_name} ({'Main File' if self.is_main_file else 'Update'})"
 
 class ProjectInvitation(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='invitations')

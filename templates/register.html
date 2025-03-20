@@ -1,191 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <style>
-        /* Modern Page Styling */
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            color: #1f2937;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            max-width: 440px;
-            width: 90%;
-            margin: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            color: #1f2937;
-            text-align: center;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-
-        .input-group {
-            position: relative;
-            width: 100%;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-            background: #fff;
-            height: 48px;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        input::placeholder {
-            color: #9ca3af;
-        }
-
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1rem;
-            padding-right: 2.5rem;
-        }
-
-        button {
-            width: 100%;
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            margin-top: 0.5rem;
-            height: 48px;
-        }
-
-        button:hover {
-            background: #4f46e5;
-            transform: translateY(-1px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .message {
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .message::before {
-            content: '';
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background-size: contain;
-        }
-
-        .error {
-            color: #dc2626;
-        }
-
-        .error::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23dc2626'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
-        }
-
-        .success {
-            color: #16a34a;
-        }
-
-        .success::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2316a34a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
-        }
-
-        .error-message {
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-        }
-
-        .error-message ul {
-            margin: 0;
-            padding-left: 1.25rem;
-        }
-
-        a {
-            color: #6366f1;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 480px) {
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign Up</title>
+        <style>
+            /* Modern Page Styling */
+            * {
+                box-sizing: border-box;
+            }
+    
+            body {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                background: linear-gradient(135deg, #f6f5f8 0%, #fcfbfd 100%);
+                color: #fff;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
+    
             .container {
-                padding: 1.5rem;
-                border-radius: 1rem;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                color: #1f2937;
+                padding: 2.5rem;
+                border-radius: 1.5rem;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                max-width: 440px;
+                width: 90%;
+                margin: 1rem;
+                transition: all 0.3s ease;
             }
-
+    
+            /* 🎨 تطبيق الخط + التدرج اللوني على العنوان */
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.875rem;
+                font-weight: 700;
+                margin-bottom: 2rem;
+                text-align: center;
+                background: linear-gradient(45deg, #e879f9, #818cf8);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; /* نفس الخط المستخدم في SyncUp */
+                letter-spacing: 0.5px; /* تحسين المسافات بين الحروف */
             }
-
+    
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 1.25rem;
+            }
+    
+            .input-group {
+                position: relative;
+                width: 100%;
+            }
+    
             input, select {
-                padding: 0.75rem;
-                height: 44px;
+                width: 100%;
+                padding: 0.875rem 1rem;
+                border: 1px solid #e5e7eb;
+                border-radius: 0.75rem;
+                font-size: 1rem;
+                transition: all 0.2s ease;
+                background: #fff;
+                height: 48px;
             }
-
+    
+            input:focus, select:focus {
+                outline: none;
+                border-color: #6366f1;
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
+    
+            input::placeholder {
+                color: #9ca3af;
+            }
+    
+            select {
+                appearance: none;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 1rem center;
+                background-size: 1rem;
+                padding-right: 2.5rem;
+            }
+    
             button {
-                height: 44px;
+                width: 100%;
+                background: linear-gradient(45deg, #e879f9, #818cf8);
+                color: white;
+                border: none;
+                padding: 1rem;
+                border-radius: 0.75rem;
+                cursor: pointer;
+                font-size: 1rem;
+                font-weight: 600;
+                transition: all 0.2s ease;
+                margin-top: 0.5rem;
+                height: 48px;
             }
-        }
-    </style>
-</head>
-<body>
+    
+            button:hover {
+                background: #7a1a88;
+                transform: translateY(-1px);
+            }
+    
+            button:active {
+                transform: translateY(0);
+            }
+    
+            .message {
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+                display: none;
+                align-items: center;
+                gap: 0.5rem;
+            }
+    
+            .error {
+                color: #dc2626;
+            }
+    
+            .success {
+                color: #16a34a;
+            }
+    
+            .error-message {
+                background: #fee2e2;
+                color: #dc2626;
+                padding: 1rem;
+                border-radius: 0.75rem;
+                margin-bottom: 1.5rem;
+                font-size: 0.875rem;
+            }
+    
+            .error-message ul {
+                margin: 0;
+                padding-left: 1.25rem;
+            }
+    
+            a {
+                color: #5f187c;
+                text-decoration: none;
+                font-weight: 500;
+            }
+    
+            a:hover {
+                text-decoration: underline;
+            }
+    
+            @media (max-width: 480px) {
+                .container {
+                    padding: 1.5rem;
+                    border-radius: 1rem;
+                }
+    
+                h1 {
+                    font-size: 1.5rem;
+                }
+    
+                input, select {
+                    padding: 0.75rem;
+                    height: 44px;
+                }
+    
+                button {
+                    height: 44px;
+                }
+            }
+        </style>
+    </head>
+    <body>
     <div class="container">
         <h1>Create New Account</h1>
     
