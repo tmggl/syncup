@@ -331,10 +331,11 @@
     </div>
 
     <script>
+        
         let selectedUsers = new Map();
 
         // Initialize from server-side data
-        const initialSelection = {{ selected_users|safe }};
+        const initialSelection = JSON.parse('{{ selected_users|escapejs }}');
         initialSelection.forEach(userId => {
             const user = document.querySelector(`input[value="${userId}"]`);
             if (user) {
