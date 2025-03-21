@@ -83,6 +83,34 @@
         .btn-upload { background: var(--success); color: white; }
         .btn-download { background: var(--info); color: white; }
 
+        #uploadModal .btn-upload {
+           display: block;
+           width: 100%;
+           padding: 12px;
+           margin-top: 25px; /* ✅ زيادة المسافة فقط لزر الرفع داخل النافذة المنبثقة */
+           background: var(--success);
+           color: white;
+           border-radius: 8px;
+           border: none;
+           font-size: 16px;
+           font-weight: 600;
+           cursor: pointer;
+           text-align: center;
+           transition: all 0.3s ease;
+        }
+
+        #uploadModal .btn-upload:hover {
+           background: #0a9f73;
+           transform: scale(1.03);
+        }
+
+        #uploadModal .btn-upload:focus {
+           outline: none;
+           box-shadow: 0 0 5px rgba(10, 159, 115, 0.5);
+        }
+
+        
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -100,7 +128,7 @@
         }
 
         th {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background: linear-gradient(45deg, #5e47c2, #781378);
             color: white;
             font-weight: 600;
         }
@@ -138,13 +166,106 @@
             cursor: pointer;
             color: var(--dark);
         }
+        /* ✅ تحسين تصميم الحقول */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-weight: 600;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.styled-input,
+.styled-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+}
+
+.styled-input:focus,
+.styled-textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+}
+
+.styled-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* ✅ تحسين شكل زر رفع الملفات */
+.file-upload-modern {
+    text-align: center;
+    padding: 15px;
+    border: 2px dashed var(--primary);
+    border-radius: 10px;
+    background: #f8fafc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.file-upload-modern:hover {
+    background: #eef2ff;
+    border-color: var(--secondary);
+}
+
+.file-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 600;
+    color: var(--dark);
+    cursor: pointer;
+}
+
+.file-input {
+    display: none;
+}
+
 
         .members-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 1rem;
+           display: flex;
+           flex-direction: row; /* جعلهم في صف واحد */
+           align-items: center; /* محاذاة الصور مع النص */
+           gap: 15px; /* مسافة بين كل عنصر */
+           margin-top: 10px;
+           flex-wrap: wrap; /* إذا زاد عدد الأعضاء، سيتم كسرهم إلى سطر جديد */
+        }
+        .member-card {
+           display: flex;
+           align-items: center;
+           gap: 10px;
+           background: white;
+           padding: 8px 12px;
+           border-radius: 8px;
+           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+           min-width: 180px;
+        }
+
+        .member-avatar {
+           width: 40px;
+           height: 40px;
+           border-radius: 50%; /* يجعل الصورة دائرية */
+           object-fit: cover;
+           border: 2px solid var(--primary);
+        }
+
+        .member-name {
+          font-weight: 600;
+          color: var(--dark);
         }
 
         .member-card {
@@ -230,27 +351,23 @@
                 <h2>👥 Team Members</h2>
                 <div class="members-grid">
                     {% for member in members %}
-                    <div class="member-card">{{ member.username }}</div>
+                    <div class="member-card">
+                        <img src="{{ member.profile_image.url }}" alt="Avatar" class="member-avatar">
+                        <span class="member-name">{{ member.username }}</span>
+                    </div>
                     {% empty %}
                     <p>No members yet</p>
                     {% endfor %}
                 </div>
-
+            
                 {% if is_owner %}
                 <div class="invite-section">
-                    <button class="btn btn-invite" onclick="openInviteModal()">📩 Invite Members</button>
-                    <div class="modal" id="inviteModal">
-                        <div class="modal-content">
-                            <span class="close" onclick="closeInviteModal()">&times;</span>
-                            <iframe id="inviteFrame" src="/projects/invite-members/" 
-                                    style="width:100%; height:400px; border:none;"></iframe>
-                        </div>
-                    </div>
+                    <a href="/projects/invite-members/" class="btn btn-invite">
+                        <i class="fa-solid fa-user-plus"></i> Invite Members
+                    </a>
                 </div>
                 {% endif %}
-            </div>
-        </div>
-
+            </div>            
         {% if is_owner %}
         <div class="btn-group">
             <a href="{% url 'update_project' project.id %}" class="btn btn-edit">✏️ Edit</a>
@@ -378,30 +495,24 @@
                     <label for="description"><i class="fa-solid fa-file-alt"></i> Description</label>
                     <textarea name="description" id="description" class="styled-textarea" placeholder="Add a short description..."></textarea>
                 </div>
-            </div>            <!-- ✅ خانة الإرفاق الحديثة -->
+            </div>
+        
+            <!-- ✅ خانة الإرفاق الحديثة -->
             <div class="file-upload-modern">
                 <label for="new_file" class="file-upload-label">
                     <i class="fa-solid fa-upload"></i> Drag & Drop or Click to Upload
                     <input type="file" name="new_file" id="new_file" required class="file-input">
                 </label>
             </div>
-
+        
             <button type="submit" class="btn btn-upload mt-3">Upload</button>
-        </form>
+        </form>   
     </div>
 </div>
 
     </div>
 
     <script>
-        function openInviteModal() {
-            document.getElementById("inviteModal").style.display = "flex";
-        }
-
-        function closeInviteModal() {
-            document.getElementById("inviteModal").style.display = "none";
-        }
-
         function openUploadModal() {
             document.getElementById("uploadModal").style.display = "flex";
         }
