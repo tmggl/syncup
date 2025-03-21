@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management Hub</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+           padding: 6rem 1rem 2rem; /* ✅ تمت إضافة مسافة من الأعلى */
+        }
+
+        /* Header Section */
+        .task-header {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .task-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .task-title h1 {
+            font-size: 2rem;
+            color: var(--dark);
+        }
+
+        /* Status Badge */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .status-pending { background: #fef3c7; color: #b45309; }
+        .status-in_progress { background: #dbeafe; color: #1d4ed8; }
+        .status-completed { background: #d1fae5; color: #047857; }
+        .status-rejected { background: #fee2e2; color: #b91c1c; }
+
+        /* Task Metadata Grid */
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metadata-card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .metadata-card h3 {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .metadata-content {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* File Upload Section */
+        .upload-section {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-heading {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .upload-form {
+            background: var(--light);
+            border: 2px dashed var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+
+        /* Updates Table */
+        .updates-table {
+            background: var(--surface);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--light);
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            background: var(--surface);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--light);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .task-title h1 {
+                font-size: 1.5rem;
+            }
+            
+            .metadata-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            th, td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <!-- Task Header -->
+        <div class="task-header">
+            <div class="task-title">
+                <h1>{{ task.title }}</h1>
+                <span class="status status-{{ task.status|slugify }}">
+                    {{ task.get_status_display }}
+                </span>
+            </div>
+
+            <!-- Metadata Grid -->
+            <div class="metadata-grid">
+                <div class="metadata-card">
+                    <h3>Project</h3>
+                    <div class="metadata-content">
+                        📁 {{ task.project.name }}
+                    </div>
+                </div>
+
+                <div class="metadata-card">
+                    <h3>Due Date</h3>
+                    <div class="metadata-content">
+                        📅 {{ task.due_date|date:"M d, Y" }}
+                    </div>
+                </div>
+
+                <div class="metadata-card">
+                    <h3>Assigned To</h3>
+                    <div class="metadata-content">
+                        👤 {% if task.assigned_to %}{{ task.assigned_to.username }}{% else %}Unassigned{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Button -->
+            <button class="btn btn-ghost" onclick="openDescriptionModal()">
+                📝 View Full Description
+            </button>
+        </div>
+
+        <!-- Status Update Section (Owner Only) -->
+        {% if request.user == task.project.owner %}
+        <div class="upload-section">
+            <h2 class="section-heading">
+                ⚙️ Update Task Status
+            </h2>
+            <form method="POST" action="{% url 'update_task_status' task.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label">Task Status</label>
+                    <select name="status" class="form-input">
+                        {% for status_code, status_label in task.STATUS_CHOICES %}
+                            <option value="{{ status_code }}" {% if task.status == status_code %}selected{% endif %}>
+                                {{ status_label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                                <button type="submit" class="btn btn-primary">
+                    🔄 Update Status
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- File Upload Section -->
+        <div class="upload-section">
+            <h2 class="section-heading">
+                📤 Submit Task Update
+            </h2>
+            <form method="POST" action="{% url 'upload_task_update' task.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="upload-form">
+                    <div class="form-group">
+                        <input type="file" name="update_file" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="update_description" class="form-input" 
+                                placeholder="Update description..." rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        🚀 Upload Update
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Updates Table -->
+        <div class="updates-table">
+            <h2 class="section-heading">
+                📜 Update History
+            </h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Description</th>
+                            <th>Uploaded By</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for update in task_updates %}
+                        <tr>
+                            <td>
+                                <a href="{{ update.file.url }}" class="btn btn-ghost" download>
+                                    📎 {{ update.file.name|truncatechars:20 }}
+                                </a>
+                            </td>
+                            <td>
+                                <button class="btn btn-ghost" 
+                                        onclick="openUpdateDescriptionModal(`{{ update.description|escapejs }}`)">
+                                    👁️ View
+                                </button>
+                            </td>
+                            <td>{{ update.uploaded_by.username }}</td>
+                            <td>{{ update.uploaded_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{{ update.file.url }}" class="btn btn-ghost" download>
+                                    ⬇ Download
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">No updates available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <a href="{% url 'sent_tasks' %}" class="btn btn-ghost" style="margin-top: 2rem;">
+            ← Back to Sent Tasks
+        </a>
+    </div>
+
+    <!-- Modals -->
+    <div id="descriptionModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeDescriptionModal()">×</button>
+            <h2>📄 Task Description</h2>
+            <p>{{ task.description|default:"No description provided" }}</p>
+        </div>
+    </div>
+
+    <div id="updateDescriptionModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeUpdateDescriptionModal()">×</button>
+            <h2>📝 Update Details</h2>
+            <p id="updateDescriptionContent"></p>
+        </div>
+    </div>
+
+    <script>
+        // Modal Functions
+        function openDescriptionModal() {
+            document.getElementById('descriptionModal').style.display = 'flex';
+        }
+
+        function closeDescriptionModal() {
+            document.getElementById('descriptionModal').style.display = 'none';
+        }
+
+        function openUpdateDescriptionModal(content) {
+            document.getElementById('updateDescriptionContent').textContent = content || 'No description provided';
+            document.getElementById('updateDescriptionModal').style.display = 'flex';
+        }
+
+        function closeUpdateDescriptionModal() {
+            document.getElementById('updateDescriptionModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sent Tasks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --surface: #ffffff;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 3rem;
+        }
+
+        .table-wrapper {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse; /* ✅ يزيل الفواصل بين الخلايا */
+            border-spacing: 0; /* ✅ يضمن عدم وجود مسافات */
+        }
+
+        thead tr {
+            background: linear-gradient(45deg, #5e47c2, #781378); /* ✅ التدرج يطبق على الصف كله */
+        }
+
+        thead th {
+           color: white;
+           font-weight: 600;
+           padding: 1rem;
+           text-align: left;
+           border: none; /* ✅ إزالة الخطوط الفاصلة */
+        }
+
+        tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .table-wrapper {
+                border-radius: 0;
+                box-shadow: none;
+                background: transparent;
+            }
+
+            table {
+                min-width: 100%;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tbody tr {
+                display: block;
+                background: var(--surface);
+                margin-bottom: 1rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+
+            tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.75rem 1rem;
+                border-bottom: none;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: 500;
+                color: #64748b;
+                margin-right: 1rem;
+            }
+        }
+
+        /* Status Colors */
+        .status-pending { background: #fffbeb; color: #d97706; }
+        .status-in_progress { background: #ecfdf5; color: #059669; }
+        .status-completed { background: #eff6ff; color: #2563eb; }
+        .status-rejected { background: #fef2f2; color: #dc2626; }
+        .status-urgent { background: #fef2f2; color: #dc2626; }
+        .status-new { background: #f5f3ff; color: #7c3aed; }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <h1>📤 Sent Tasks</h1>
+        
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task Title</th>
+                        <th>Project</th>
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if tasks %}
+                        {% for task in tasks %}
+                        <tr>
+                            <td data-label="Task Title">{{ task.title }}</td>
+                            <td data-label="Project">{{ task.project.name }}</td>
+                            <td data-label="Assigned To">
+                                {% if task.assigned_to %}
+                                    {{ task.assigned_to.username }}
+                                {% else %}
+                                    <em>Unassigned</em>
+                                {% endif %}
+                            </td>
+                            <td data-label="Status">
+                                <span class="status status-{{ task.status|slugify }}">
+                                    {{ task.get_status_display }}
+                                </span>
+                            </td>
+                            <td data-label="Due Date">{{ task.due_date|date:"Y-m-d" }}</td>
+                            <td data-label="Actions">
+                                <a href="{% url 'task_progress' task.id %}" class="btn">
+                                    View Progress
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem;">
+                                No sent tasks found
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

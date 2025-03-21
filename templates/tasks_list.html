@@ -1,14 +1,301 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Tasks List</title>
+    <meta charset="UTF-8">
+    <title>{% if is_owner %}All Tasks in Project{% else %}My Assigned Tasks{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --light: #f8fafc;
+            --dark: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 1.25rem;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-view { 
+            background: var(--info);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .btn-view:hover { 
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-progress { 
+            background: var(--warning);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .btn-progress:hover { 
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .btn-accept { 
+            background: var(--success);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .btn-accept:hover { 
+            background: #0e9f6e;
+            transform: translateY(-1px);
+        }
+
+        .btn-reject { 
+            background: var(--danger);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .btn-reject:hover { 
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        .status {
+            font-weight: 600;
+            text-transform: capitalize;
+            padding: 0.5rem 1rem;
+            border-radius: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-in_progress { background: #d1fae5; color: #065f46; }
+        .status-completed { background: #e0f2fe; color: #0369a1; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+        .status-urgent { background: #fef2f2; color: #b91c1c; }
+        .status-new { background: #ede9fe; color: #5b21b6; }
+
+        .no-tasks {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+            font-size: 1.125rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-disabled {
+    background: #d1d5db; /* لون رمادي */
+    color: #6b7280;
+    cursor: not-allowed;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-align: center;
+    display: inline-block;
+    border: 1px solid #9ca3af; /* إطار رمادي */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+            
+            th, td {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8125rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Tasks List</h1>
-    <ul>
-        {% for task in tasks %}
-            <li><a href="{% url 'task_detail' task.id %}">{{ task.title }}</a> - {{ task.status }}</li>
-        {% endfor %}
-    </ul>
+
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        {% if is_owner %}
+            <h1>📌 All Tasks in Project: {{ project.name }}</h1>
+            <p>Here you can track all assigned and unassigned tasks in this project.</p>
+        {% else %}
+            <h1>📥 My Assigned Tasks</h1>
+            <p>These are the tasks assigned to you in this project.</p>
+        {% endif %}
+
+        {% if tasks %}
+        <h3>📝 Assigned Tasks</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Task Title</th>
+                    <th>Project</th>
+                    <th>Owner</th> <!-- ✅ تمت إضافة عمود المالك -->
+                    {% if is_owner %}<th>Assigned To</th>{% endif %}
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                {% if task.assigned_to %}
+                    {% if is_owner or task.assigned_to == request.user %}
+                    <tr>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.project.name }}</td>
+                        <td>{{ task.project.owner.username }}</td>  <!-- ✅ عرض اسم المالك (مرسل المهمة) -->
+                        {% if is_owner %}<td>{{ task.assigned_to.username }}</td>{% endif %}
+                        <td><span class="status status-{{ task.status|slugify }}">{{ task.get_status_display }}</span></td>
+                        <td>{{ task.due_date|date:"Y-m-d" }}</td>
+                        <td>
+                            <div class="btn-group">
+                                {% if request.user == task.assigned_to %}
+                                    {% if task.status == "pending" %}
+                                        <a href="{% url 'task_detail' task.id %}" class="btn btn-view">📄 View & Accept</a>
+                                        <a href="{% url 'task_detail' task.id %}" class="btn btn-accept">✅ Accept</a>
+                                        <a href="{% url 'task_detail' task.id %}" class="btn btn-reject">❌ Reject</a>
+                                    {% elif task.status == "in_progress" or task.status == "completed" %}
+                                        <a href="{% url 'task_progress' task.id %}" class="btn btn-progress">📊 Work on Task</a>
+                                        <a href="{% url 'task_detail' task.id %}" class="btn btn-view">🔍 Details</a>
+                                    {% elif task.status == "rejected" %}
+                                        <button class="btn btn-disabled" title="You cannot work on a rejected task.">🚫 Task Rejected</button>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if is_owner %}
+                                    <a href="{% url 'task_progress' task.id %}" class="btn btn-progress">📈 Track Progress</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if is_owner %}
+        <h3>🛠 Unassigned Tasks</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Task Title</th>
+                    <th>Project</th>
+                    <th>Owner</th> <!-- ✅ تمت إضافة عمود المالك -->
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                {% if not task.assigned_to %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.project.name }}</td>
+                    <td>{{ task.project.owner.username }}</td>  <!-- ✅ عرض اسم المالك -->
+                    <td><span class="status status-{{ task.status|slugify }}">{{ task.get_status_display }}</span></td>
+                    <td>{{ task.due_date|date:"Y-m-d" }}</td>
+                    <td>
+                        <a href="{% url 'task_detail' task.id %}" class="btn btn-view">👁️ View</a>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        {% else %}
+        <div class="no-tasks">
+            <p>No tasks available.</p>
+        </div>
+        {% endif %}
+    </div>
+
 </body>
+
 </html>

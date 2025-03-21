@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Task</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 80px auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: var(--light);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+            outline: none;
+        }
+
+        .btn-submit {
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #0e9f6e;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .messages {
+            margin-bottom: 1rem;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .messages.success { background-color: #d1fae5; color: #065f46; }
+        .messages.error { background-color: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <h1>📝 Create New Task</h1>
+
+        {% if messages %}
+        {% for message in messages %}
+            <div class="messages {{ message.tags }}">
+                {{ message|safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            
+            <div class="form-group">
+                <label for="id_project">📁 Project</label>
+                {{ form.project }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_title">📌 Task Title</label>
+                {{ form.title }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_description">📝 Description</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_assigned_to">👤 Assign To</label>
+                {{ form.assigned_to }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_due_date">📅 Due Date</label>
+                {{ form.due_date }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_files">📎 Attach Files</label>
+                {{ form.files }}
+            </div>
+
+            <button type="submit" class="btn-submit">➕ Create Task</button>
+        </form>
+
+        <a href="{% url 'project_detail' project.id %}" class="back-link">🔙 Back to Project</a>
+    </div>
+</body>
+</html>

@@ -262,16 +262,6 @@
         
     <body>
         {% include 'navbar.html' %}
-        {% if messages %}
-<div class="alert-container">
-    {% for message in messages %}
-    <div class="alert success-alert">
-        <span>{{ message }}</span>
-        <button onclick="this.parentElement.style.display='none';">×</button>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
 
     
         <button class="project-btn" onclick="openModal()">+ New Project</button>

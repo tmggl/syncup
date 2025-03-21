@@ -187,12 +187,13 @@
             <p>{{ completed_tasks_count }}</p>
         </div>
 
-        <!-- ✅ كرت المهام المتبقية -->
+        <!-- ✅ كرت المهام  -->
         <div class="dashboard-card stats-card">
             <h2>Pending Tasks</h2>
             <p>{{ pending_tasks_count }}</p>
+            <a href="{% url 'tasks_list' %}" class="view-projects-btn">View Pending Tasks</a>
         </div>
-
+        
         <!-- ✅ كرت تقييم المستخدم -->
         <div class="dashboard-card stats-card">
             <h2>Your Rating</h2>
@@ -204,7 +205,7 @@
             <h3>Today's Tasks & Meetings</h3>
             
             <div class="task-list">
-                <h4>Tasks:</h4>
+                <h4>Today's Tasks:</h4>
                 {% for task in tasks_today %}
                     <div class="task-item">
                         <span>{{ task.title }}</span>
@@ -214,7 +215,19 @@
                     <p>No tasks for today.</p>
                 {% endfor %}
             </div>
-
+            
+            <div class="task-list">
+                <h4>Upcoming Task:</h4>
+                {% if upcoming_task %}
+                    <div class="task-item">
+                        <span>{{ upcoming_task.title }}</span>
+                        <span>{{ upcoming_task.due_date }}</span>
+                    </div>
+                {% else %}
+                    <p>No upcoming tasks.</p>
+                {% endif %}
+            </div>
+            
             <div class="meeting-list">
                 <h4>Meetings:</h4>
                 {% for meeting in meetings_today %}

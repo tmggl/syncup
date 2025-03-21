@@ -1,13 +1,303 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{{ task.title }}</title>
+    <meta charset="UTF-8">
+    <title>Task Master</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --surface: #ffffff;
+            --background: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-xl: 24px;
+            --radius-md: 12px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.6;
+            padding-top: 4rem;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .task-header {
+            background: linear-gradient(45deg, #5e47c2, #781378);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .task-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.05em;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        .task-card {
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            transition: transform 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+
+        .interactive-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .interactive-list li {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+        }
+
+        .interactive-list li:hover {
+            background: var(--surface);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dynamic-form {
+            display: grid;
+            gap: 1rem;
+            padding: 2rem;
+            background: rgba(241, 245, 249, 0.3);
+            border-radius: var(--radius-md);
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .task-title {
+                font-size: 2rem;
+            }
+            
+            .task-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .glass-panel {
+                margin: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ task.title }}</h1>
-    <p>{{ task.description }}</p>
-    <p>Status: {{ task.status }}</p>
-    <p>Assigned To: {{ task.assigned_to.username }}</p>
-    <p>Due Date: {{ task.due_date }}</p>
+    {% include 'navbar.html' %}
+
+    <div class="glass-panel" style="max-width: 1200px; margin: 2rem auto;">
+        <div class="task-header">
+            <h1 class="task-title">{{ task.title }}</h1>
+        </div>
+
+        <div class="task-grid">
+            <!-- Task Metadata Section -->
+            <div class="task-card">
+                <h3 style="margin-top: 0;">📋 Task Overview</h3>
+                <ul class="interactive-list">
+                    <li>
+                        <span style="flex: 1;">Project:</span>
+                        <strong>{{ task.project.name }}</strong>
+                    </li>
+                    <li>
+                        <span style="flex: 1;">Project Owner:</span>
+                        <strong>👑 {{ task.project.owner.username }}</strong>
+                    </li>
+                    <li>
+                        <span style="flex: 1;">Due Date:</span>
+                        <strong>{{ task.due_date|date:"M d, Y" }}</strong>
+                    </li>
+                    <li>
+                        <span style="flex: 1;">Status:</span>
+                        <span class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                            {{ task.get_status_display }}
+                        </span>
+                    </li>
+                    <li>
+                        <span style="flex: 1;">Assigned To:</span>
+                        <strong>👤 {{ task.assigned_to.username }}</strong>
+                    </li>
+                    <li>
+                        <span style="flex: 1;">Description:</span>
+                        <button onclick="openDescriptionModal()" class="badge" style="background: var(--info); color: rgb(86, 86, 86);">📄 View Description</button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Action Section -->
+            <div class="task-card">
+                <h3 style="margin-top: 0;">🚀 Quick Actions</h3>
+                
+                {% if request.user == task.assigned_to and task.status == "pending" %}
+                <div class="dynamic-form">
+                    <form method="POST" action="{% url 'respond_to_task' task.id 'accept' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="badge" style="width: 100%; background: var(--success); color: white;">
+                            ✅ Accept Task
+                        </button>
+                    </form>
+                    <form method="POST" action="{% url 'respond_to_task' task.id 'reject' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="badge" style="width: 100%; background: var(--danger); color: white; margin-top: 0.5rem;">
+                            ❌ Reject Task
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+
+                {% if request.user == task.assigned_to and task.status == "in_progress" %}
+                <a href="{% url 'task_progress' task.id %}" class="badge" 
+                   style="width: 100%; background: var(--primary); color: white; text-decoration: none;">
+                    🛠️ Continue Working
+                </a>
+                {% endif %}
+
+                {% if is_owner %}
+                <div class="dynamic-form">
+                    <select class="badge" style="width: 100%; background: rgba(99, 102, 241, 0.1);">
+                        {% for value, label in task.STATUS_CHOICES %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="badge" style="width: 100%; background: var(--primary); color: white; margin-top: 0.5rem;">
+                        🔄 Update Status
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Attachments Section -->
+            {% if task.files %}
+            <div class="task-card">
+                <h3 style="margin-top: 0;">📎 Attachments</h3>
+                <a href="{{ task.files.url }}" class="badge" 
+                   style="width: 100%; background: rgba(99, 102, 241, 0.1); color: var(--primary); text-decoration: none;"
+                   download>
+                    ⬇️ Download File
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+<!-- ✅ Modal: Task Description -->
+<div id="descriptionModal" style="
+    display: none;  /* ✅ المودال الآن مخفي عند تحميل الصفحة */
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+">
+    <div style="
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        max-width: 600px;
+        width: 90%;
+        position: relative;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    ">
+        <button onclick="closeDescriptionModal()" style="
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        ">×</button>
+        <h2 style="margin-top: 0;">📝 Task Description</h2>
+        <p style="line-height: 1.8;">{{ task.description|default:"No description provided." }}</p>
+    </div>
+</div>
+
+<!-- ✅ Script -->
+<script>
+    function openDescriptionModal() {
+        document.getElementById('descriptionModal').style.display = 'flex';
+    }
+    
+    function closeDescriptionModal() {
+        document.getElementById('descriptionModal').style.display = 'none';
+    }
+
+    // ✅ إغلاق المودال عند النقر خارج النافذة
+    window.onclick = function(event) {
+        let modal = document.getElementById('descriptionModal');
+        if (event.target === modal) {
+            closeDescriptionModal();
+        }
+    }
+</script>
+
 </body>
 </html>

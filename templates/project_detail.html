@@ -368,13 +368,14 @@
                 </div>
                 {% endif %}
             </div>            
-        {% if is_owner %}
-        <div class="btn-group">
-            <a href="{% url 'update_project' project.id %}" class="btn btn-edit">✏️ Edit</a>
-            <a href="{% url 'delete_project' project.id %}" class="btn btn-delete">🗑️ Delete</a>
-        </div>
-        {% endif %}
-
+            <div class="btn-group">
+                <a href="{% url 'update_project' project.id %}" class="btn" style="background: #3b82f6; color: white;">✏️ Edit</a>
+                <a href="{% url 'delete_project' project.id %}" class="btn" style="background: #ef4444; color: white;">🗑️ Delete</a>
+                <a href="{% url 'create_task' project.id %}" class="btn" style="background: #10b981; color: white;">📝 Create New Task</a>
+                <a href="{% url 'sent_tasks' %}" class="btn" style="background: #4f46e5; color: white;">📋 View Sent Tasks</a>
+                <a href="{% url 'tasks_list_by_project' project.id %}" class="btn" style="background: #ff9800; color: white;">📌 View All Tasks</a>
+            </div>
+                                                
         <div class="file-section">
             <h2>📂 Main Files</h2>
             <table>
