@@ -1,14 +1,274 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Chat with {{ chat.expert.username }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ chat.name|default:"Premium Chat" }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --user-message: #3b82f6;
+            --other-message: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            padding-top: 72px;
+        }
+
+        .chat-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .messages-wrapper {
+            height: 65vh;
+            overflow-y: auto;
+            padding-right: 12px;
+            margin-bottom: 24px;
+        }
+
+        .message-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 24px;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            position: relative;
+            line-height: 1.5;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-message {
+            background: var(--user-message);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .other-message {
+            background: var(--other-message);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .sender-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .sender-name {
+            font-weight: 600;
+            color: inherit;
+        }
+
+        .message-content {
+            margin-right: 4px;
+        }
+
+        .attachment-preview img {
+            max-height: 60px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .attachment-preview img:hover {
+            transform: scale(1.05);
+        }
+
+        audio {
+            max-width: 150px;
+        }
+
+        .message-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 0.75rem;
+        }
+
+        .message-time {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .other-message .message-time {
+            color: var(--text-secondary);
+        }
+
+        .message-status {
+            display: flex;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        .input-area {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 16px;
+        }
+
+        .form-control {
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            resize: none;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .send-button {
+            background: var(--primary);
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            float: right;
+        }
+
+        .send-button:hover {
+            background: var(--primary-hover);
+        }
+
+        .errorlist {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chat with {{ chat.expert.username }}</h1>
-    <ul>
-        {% for message in messages %}
-            <li><strong>{{ message.sender.username }}:</strong> {{ message.content }}</li>
-        {% endfor %}
-    </ul>
+    {% include 'navbar.html' %}
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1 class="chat-title">💬 {{ chat.name|default:"Premium Chat" }}</h1>
+        </div>
+
+        <div class="messages-wrapper">
+            {% for message in messages %}
+            <div class="message-group {% if message.sender == request.user %}user-message-group{% endif %}">
+                <div class="message-bubble {% if message.sender == request.user %}user-message{% else %}other-message{% endif %}">
+                    
+                    <img src="{{ message.sender.profile_image.url }}" alt="avatar" class="sender-avatar">
+                    <span class="sender-name">{{ message.sender.get_full_name|default:message.sender.username }}</span>
+
+                    {% if message.is_deleted %}
+                        <span style="margin-left: 10px; font-style: italic; color: var(--text-secondary);">
+                            This message was deleted by {{ message.sender.username }}
+                        </span>
+                    {% else %}
+                        {% if message.content %}
+                            <span class="message-content">{{ message.content }}</span>
+                        {% endif %}
+
+                        {% if message.attachment %}
+                            <div class="attachment-preview">
+                                {% if message.is_image %}
+                                    <a href="{{ message.attachment.url }}" target="_blank">
+                                        <img src="{{ message.attachment.url }}" alt="Image">
+                                    </a>
+                                {% elif message.is_audio %}
+                                    <audio controls>
+                                        <source src="{{ message.attachment.url }}">
+                                    </audio>
+                                {% else %}
+                                    <a href="{{ message.attachment.url }}" download>📎</a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if message.sender == request.user %}
+                        <form method="post" action="{% url 'delete_message' message.id %}" style="margin-left: 8px;">
+                            {% csrf_token %}
+                            <button type="submit" title="Delete" style="background: none; border: none; color: red; cursor: pointer;">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="message-info">
+                    <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+                    {% if message.sender == request.user %}
+                    <div class="message-status"><i class="fas fa-check"></i></div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <p>No messages yet. Start the conversation!</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <form method="post" action="{% url 'chat_detail' chat.id %}" class="input-area" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.content }}
+            {{ form.attachment }}
+            {% if form.errors %}
+                <div class="errorlist">
+                    {{ form.errors.content }}
+                    {{ form.errors.attachment }}
+                </div>
+            {% endif %}
+            <button type="submit" class="send-button">
+                Send <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
 </body>
 </html>

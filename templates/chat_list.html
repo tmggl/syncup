@@ -1,14 +1,228 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Chat List</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Chat Rooms</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --secondary: #10b981;
+      --danger: #ef4444;
+      --bg: #f1f5f9;
+      --white: #ffffff;
+      --text: #1e293b;
+      --subtle: #64748b;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 100px 20px 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .btn-expert { background: var(--primary); }
+    .btn-user { background: var(--secondary); }
+
+    .chat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .chat-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+      padding: 24px 20px;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .chat-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chat-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .chat-type {
+      font-size: 0.75rem;
+      background: rgba(99,102,241,0.1);
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--primary);
+    }
+
+    .chat-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--subtle);
+    }
+
+    .chat-meta i {
+      margin-right: 6px;
+      color: var(--primary);
+    }
+
+    .message-count {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .unread-badge {
+      position: relative;
+      background: var(--danger);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 999px;
+      margin-left: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .chat-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 80px 16px 30px;
+      }
+
+      .chat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .chat-title {
+        font-size: 1rem;
+      }
+
+      .chat-type {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+      }
+
+      .unread-badge {
+        font-size: 0.6rem;
+        padding: 2px 5px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Chat List</h1>
-    <ul>
-        {% for chat in chats %}
-            <li><a href="{% url 'chat_detail' chat.id %}">Chat with {{ chat.expert.username }}</a></li>
-        {% endfor %}
-    </ul>
+  {% include 'navbar.html' %}
+
+  <div class="container">
+    <div class="header">
+      <h1>My Chat Rooms</h1>
+      <div class="actions">
+        <a href="{% url 'expert_page' %}" class="btn btn-expert">
+          <i class="fas fa-user-graduate"></i> Ask an Expert
+        </a>
+        <a href="{% url 'start_private_chat' %}" class="btn btn-user">
+          <i class="fas fa-plus"></i> New Chat
+        </a>
+      </div>
+    </div>
+
+    <div class="chat-grid">
+      {% for chat in chats %}
+      <a href="{% url 'chat_detail' chat.id %}" class="chat-link">
+        <div class="chat-card">
+          <div class="chat-header">
+            <div class="chat-title">{{ chat.name|default:"Unnamed Chat" }}</div>
+            <div class="chat-type">{{ chat.room_type }}</div>
+          </div>
+
+          <div class="chat-meta">
+            <span><i class="fas fa-users"></i>{{ chat.participants.count }}</span>
+            <span class="message-count">
+              <i class="fas fa-comments"></i>{{ chat.messages.count }}
+              {% if chat.unread_count > 0 %}
+              <span class="unread-badge">{{ chat.unread_count }}</span>
+              {% endif %}
+            </span>
+            <span><i class="fas fa-clock"></i>{{ chat.created_at|date:"F d, Y H:i" }}</span>
+          </div>
+        </div>
+      </a>
+      {% empty %}
+      <div class="chat-card">
+        <p style="text-align:center; color: var(--subtle);">No active chat rooms. Start a new one!</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </body>
 </html>

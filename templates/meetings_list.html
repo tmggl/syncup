@@ -1,178 +1,421 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meetings List</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meetings List</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link href="https://unpkg.com/@material-tailwind/html@latest/styles.css" rel="stylesheet" />
 
-    <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #45195e;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            --background: #f8fafc;
-        }
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --secondary: #7c3aed;
+      --success: #10b981;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --background: #f8fafc;
+      --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    }
 
-        body {
-            background: var(--background);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+    body {
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
 
-        .container {
-            max-width: 900px;
-            margin: 100px auto 30px;
-            padding: 25px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
+    .glass-container {
+      max-width: 1200px;
+      margin: 100px auto 30px;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
 
-        .header h1 {
-            font-size: 24px;
-            color: var(--text-dark);
-            margin: 0;
-        }
+    .header h1 {
+     font-size: 2rem;
+     font-weight: 700;
+     background: var(--gradient);
+     background-clip: text;              /* ✅ النسخة القياسية */
+     -webkit-background-clip: text;      /* ✅ دعم Safari وChrome */
+     -webkit-text-fill-color: transparent;
+     margin: 0;
+    }
 
-        .new-meeting-btn {
-            background: var(--primary);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            border: none;
-            transition: all 0.3s ease;
-        }
+    .new-meeting-btn {
+      background: var(--gradient);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+      cursor: pointer;
+    }
 
-        .new-meeting-btn:hover {
-            background: var(--secondary);
-        }
+    .new-meeting-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
 
-        .meeting-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+    .meeting-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
 
-        .meeting-item {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.3s ease;
-        }
+    .meeting-item {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(99, 102, 241, 0.1);
+    }
 
-        .meeting-item:hover {
-            transform: translateY(-3px);
-        }
+    .meeting-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gradient);
+      transition: width 0.3s ease;
+    }
 
-        .meeting-info h2 {
-            font-size: 18px;
-            margin: 0;
-            color: var(--primary);
-        }
+    .meeting-item:hover::before {
+      width: 8px;
+    }
 
-        .meeting-info p {
-            margin: 5px 0;
-            font-size: 14px;
-            color: var(--text-light);
-        }
+    .meeting-info h2 {
+      font-size: 1.25rem;
+      margin: 0 0 0.5rem;
+      color: var(--text-dark);
+    }
 
-        .meeting-time {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--info);
-        }
+    .meeting-info h2 a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
 
-        .join-button {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
+    .meeting-info h2 a:hover {
+      color: var(--primary);
+    }
 
-        .join-button:hover {
-            background: #0c9c6a;
-        }
+    .meeting-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }
 
-        .empty-state {
-            text-align: center;
-            font-size: 16px;
-            color: var(--text-light);
-            padding: 20px;
-            background: #eef2ff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-light);
+    }
 
-        @media (max-width: 768px) {
-            .container {
-                margin: 90px auto 20px;
-                padding: 15px;
-            }
-        }
-    </style>
+    .meta-item i {
+      width: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .meeting-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .join-button {
+      background: var(--success);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .join-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .show-description-btn {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--info);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .show-description-btn:hover {
+      background: var(--info);
+      color: white;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      grid-column: 1 / -1;
+      background: rgba(239, 246, 255, 0.5);
+      border-radius: 1rem;
+      border: 2px dashed rgba(99, 102, 241, 0.2);
+    }
+
+    .empty-state i {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    /* Modern Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+      transform: translateY(-20px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .modal h3 {
+      font-size: 1.5rem;
+      margin: 0 0 1rem;
+      color: var(--text-dark);
+    }
+
+    .modal p {
+      color: var(--text-light);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: color 0.2s;
+    }
+
+    .close-modal:hover {
+      color: var(--danger);
+    }
+
+    @media (max-width: 768px) {
+      .glass-container {
+        margin: 80px 1rem 1rem;
+        padding: 1.5rem;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .new-meeting-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .meeting-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .modal {
+        padding: 1.5rem;
+      }
+      
+      .modal h3 {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    {% include 'navbar.html' %}  <!-- ✅ Include the top navigation bar -->
+    {% include 'navbar.html' %}
+  
+    <div class="glass-container">
+      <div class="header">
+        <h1>Upcoming Meetings</h1>
+        <a href="{% url 'create_meeting' %}" class="new-meeting-btn">
+          <i class="fas fa-plus"></i> Create Meeting
 
-<div class="container">
-    <div class="header">
-        <h1>Meetings List</h1>
-        <a href="{% url 'create_meeting' %}" class="new-meeting-btn">+ New Meeting</a>
-    </div>
-
-    <div class="meeting-list">
+        </a>
+      </div>
+  
+      <div class="meeting-list">
         {% for meeting in meetings %}
-            <div class="meeting-item">
-                <div class="meeting-info">
-                    <h2><a href="{% url 'meeting_detail' meeting.id %}">{{ meeting.title }}</a></h2>
-                    <p>{{ meeting.description }}</p>
+          <div class="meeting-item">
+            <div class="meeting-info">
+              <h2><a href="{% url 'meeting_detail' meeting.id %}">{{ meeting.title }}</a></h2>
+  
+              <div class="meeting-meta">
+                <div class="meta-item">
+                  <i class="fas fa-calendar-alt"></i>
+                  {{ meeting.date|date:"M d, Y" }} - {{ meeting.time }}
                 </div>
-                <div class="meeting-time">
-                    {{ meeting.date|date:"M d, Y" }} - {{ meeting.time }}
+  
+                {% if meeting.project %}
+                <div class="meta-item">
+                  <i class="fas fa-folder-open"></i>
+                  {{ meeting.project.name }}
                 </div>
-                {% if meeting.meeting_link %}
-                    <button class="join-button" onclick="joinMeeting('{{ meeting.meeting_link }}')">🔗 Join</button>
                 {% endif %}
+  
+                {% if meeting.created_by %}
+                <div class="meta-item">
+                  <i class="fas fa-user"></i>
+                  {{ meeting.created_by.get_full_name|default:meeting.created_by.username }}
+                </div>
+              {% else %}
+                <div class="meta-item">
+                  <i class="fas fa-user-slash"></i>
+                  Unknown
+                </div>
+              {% endif %}
+                
+                <div class="meeting-type">
+                  {% if meeting.expert %}
+                  <i class="fas fa-user-tie"></i> Expert Session
+                  {% else %}
+                  <i class="fas fa-users"></i> Team Meeting
+                  {% endif %}
+                </div>
+              </div>
+  
+              <div class="action-buttons">
+                {% if meeting.description %}
+                <button class="show-description-btn" onclick="showDescription(`{{ meeting.description|escapejs }}`)">
+                  <i class="fas fa-file-alt"></i> Details
+                </button>
+                {% endif %}
+  
+                {% if meeting.meeting_link %}
+                <button class="join-button" onclick="joinMeeting('{{ meeting.meeting_link }}')">
+                  <i class="fas fa-video"></i> Join
+                </button>
+                {% endif %}
+              </div>
             </div>
+          </div>
         {% empty %}
-            <div class="empty-state">
-                📭 No scheduled meetings
-            </div>
+          <div class="empty-state">
+            <i class="fas fa-calendar-times fa-2x"></i>
+            <h3>No Meetings Scheduled</h3>
+            <p>Get started by scheduling a new meeting</p>
+          </div>
         {% endfor %}
+      </div>
     </div>
-</div>
-
-<script>
-    function joinMeeting(link) {
+  
+    <!-- Modal -->
+    <div class="modal-overlay" id="descriptionModal" onclick="closeModal()">
+      <div class="modal" onclick="event.stopPropagation()">
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+        <h3>Meeting Details</h3>
+        <p id="modalDescriptionText"></p>
+      </div>
+    </div>
+  
+    <script>
+      function joinMeeting(link) {
         window.open(link, '_blank');
-    }
-</script>
-
-</body>
+      }
+  
+      function showDescription(text) {
+        const modal = document.querySelector('.modal');
+        document.getElementById('modalDescriptionText').textContent = text;
+        document.getElementById('descriptionModal').style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+      }
+  
+      function closeModal() {
+        const modal = document.querySelector('.modal');
+        modal.classList.remove('active');
+        setTimeout(() => {
+          document.getElementById('descriptionModal').style.display = 'none';
+        }, 300);
+      }
+  
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        if (event.target === document.getElementById('descriptionModal')) {
+          closeModal();
+        }
+      }
+    </script>
+  </body>
 </html>

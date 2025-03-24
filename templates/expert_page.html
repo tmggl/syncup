@@ -1,103 +1,53 @@
-{% include 'navbar.html' %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ask an Expert</title>
+    <title>Experts</title>
     <style>
         body {
-            background: #f4f6f9;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
             padding: 20px;
+            padding-top: 80px;
         }
-
         h2 {
-            color: #2c3e50;
-            text-align: center;
+            color: #374151;
         }
-
-        .expert-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        ul {
+            list-style: none;
+            padding: 0;
         }
-
-        .expert-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        li {
             background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .expert-info {
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 8px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-
-        .expert-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: gray;
-        }
-
-        .expert-name {
-            font-size: 16px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .expert-rating {
-            font-size: 14px;
-            color: gold;
-        }
-
-        .chat-btn {
-            background: #002D62;
+        a {
+            background-color: #10b981;
             color: white;
             padding: 8px 14px;
-            border-radius: 6px;
+            border-radius: 5px;
             text-decoration: none;
-        }
-
-        .chat-btn:hover {
-            background: #001F44;
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h2>Ask an Expert</h2>
-
-        <div class="expert-list">
-            {% for expert in experts %}
-            <div class="expert-card">
-                <div class="expert-info">
-                    <div class="expert-img"></div>
-                    <div>
-                        <div class="expert-name">{{ expert.name }}</div>
-                        <div class="expert-rating">⭐ {{ expert.rating }}/5</div>
-                    </div>
-                </div>
-                <a href="{% url 'chat_with_expert' expert.id %}" class="chat-btn">Chat Now</a>
-            </div>
-            {% empty %}
-            <p>No experts available.</p>
-            {% endfor %}
-        </div>
-    </div>
-
+    {% include 'navbar.html' %}
+    <h2>Available Experts</h2>
+    <ul>
+        {% for expert in experts %}
+            <li>
+                {{ expert.get_full_name|default:expert.username }}
+                <a href="{% url 'chat_with_expert' expert.id %}">Start Chat</a>
+            </li>
+        {% empty %}
+            <li>No experts available.</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

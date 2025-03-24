@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Meeting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 80px auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: var(--light);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+            outline: none;
+        }
+
+        .btn-submit {
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #0e9f6e;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .messages {
+            margin-bottom: 1rem;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .messages.success { background-color: #d1fae5; color: #065f46; }
+        .messages.error { background-color: #fee2e2; color: #991b1b; }
+
+        .info-box {
+            background-color: #f0f9ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        ul.team-members {
+            list-style: disc;
+            margin-left: 1.5rem;
+            padding-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+    
+    <div class="container">
+        <h1>📅 Create New Meeting</h1>
+    
+        {% if messages %}
+            {% for message in messages %}
+                <div class="messages {{ message.tags }}">
+                    {{ message|safe }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+    
+            <div class="form-group">
+                <label for="id_project">📁 Project</label>
+                {{ form.project }}
+            </div>
+    
+            {% if project and form.fields.participants and form.fields.participants.queryset %}
+                <div class="form-group">
+                    <label>👥 Select Participants</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        {% for member in form.fields.participants.queryset %}
+                            <div style="display: flex; align-items: center; gap: 6px; background: #f9fafb; border: 1px solid #ddd; border-radius: 8px; padding: 6px 10px;">
+                                {% if member == project.owner %}
+                                    <input type="checkbox" checked disabled>
+                                    <span>{{ member.get_full_name|default:member.username }} (Owner)</span>
+                                    <input type="hidden" name="participants" value="{{ member.id }}">
+                                {% else %}
+                                    <input type="checkbox" name="participants" value="{{ member.id }}"
+                                        {% if selected_participants and member.id|stringformat:"s" in selected_participants %}checked{% endif %}>
+                                    <span>{{ member.get_full_name|default:member.username }}</span>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+    
+            <div class="form-group">
+                <label for="id_title">📝 Meeting Title</label>
+                {{ form.title }}
+            </div>
+    
+            <div class="form-group">
+                <label for="id_date">📅 Date</label>
+                {{ form.date }}
+            </div>
+    
+            <div class="form-group">
+                <label for="id_time">⏰ Time</label>
+                {{ form.time }}
+            </div>
+    
+            <div class="form-group">
+                <label for="id_meeting_link">🔗 Meeting Link</label>
+                {{ form.meeting_link }}
+            </div>
+    
+            <div class="form-group">
+                <label for="id_platform">💻 Platform</label>
+                {{ form.platform }}
+            </div>
+    
+            <div class="form-group">
+                <label for="id_description">🗒️ Description</label>
+                {{ form.description }}
+            </div>
+    
+            <div class="form-group">
+                <label>👤 Created by</label>
+                <input type="text" value="{{ request.user.get_full_name|default:request.user.username }}" readonly>
+            </div>
+    
+            <button type="submit" class="btn-submit">✅ Create Meeting</button>
+        </form>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const projectSelect = document.getElementById("id_project");
+            if (projectSelect) {
+                projectSelect.addEventListener("change", function () {
+                    const projectId = this.value;
+                    if (projectId) {
+                        const currentUrl = new URL(window.location.href);
+                        currentUrl.searchParams.set('project', projectId);
+                        window.location.href = currentUrl.toString();
+                    }
+                });
+            }
+        });
+    </script>
+    
+    </body>
+</html>

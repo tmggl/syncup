@@ -4,22 +4,36 @@ from users.models import CustomUser
 import uuid
 
 class Meeting(models.Model):
+    PLATFORM_CHOICES = [
+        ('zoom', 'Zoom'),
+        ('meet', 'Google Meet'),
+    ]
+
     title = models.CharField(max_length=255)  # عنوان الاجتماع
     description = models.TextField(blank=True, null=True)  # تفاصيل الاجتماع
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True, related_name="meeting_set")
-  # الاجتماع مرتبط بمشروع معين (اختياري)
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, null=True, blank=True, related_name="meeting_set"
+    )  # الاجتماع مرتبط بمشروع معين (اختياري)
     date = models.DateField()  # تاريخ الاجتماع
     time = models.TimeField()  # وقت الاجتماع
     participants = models.ManyToManyField(CustomUser, related_name="meetings")  # المشاركون في الاجتماع
     expert = models.ForeignKey(
-        CustomUser, 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, 
-        related_name="expert_meetings", 
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="expert_meetings",
         limit_choices_to={'role': 'expert'}  # يسمح فقط للخبراء
     )  # الخبير في الاجتماع
+    created_by = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='meetings_created'
+    )  # الشخص الذي أنشأ الاجتماع
     meeting_link = models.CharField(max_length=255, blank=True, null=True)  # رابط الاجتماع
+    platform = models.CharField(max_length=10, choices=PLATFORM_CHOICES, default='zoom')  # نوع النظام المستخدم
     created_at = models.DateTimeField(auto_now_add=True)  # وقت الإنشاء
 
     def save(self, *args, **kwargs):
@@ -30,6 +44,7 @@ class Meeting(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.date} {self.time}"
+
 
 class ExpertAvailability(models.Model):
     expert = models.ForeignKey(

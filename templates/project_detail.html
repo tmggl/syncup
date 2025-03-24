@@ -369,14 +369,19 @@
                 {% endif %}
             </div>            
             <div class="btn-group">
-                <a href="{% url 'update_project' project.id %}" class="btn" style="background: #3b82f6; color: white;">✏️ Edit</a>
-                <a href="{% url 'delete_project' project.id %}" class="btn" style="background: #ef4444; color: white;">🗑️ Delete</a>
-                <a href="{% url 'create_task' project.id %}" class="btn" style="background: #10b981; color: white;">📝 Create New Task</a>
-                <a href="{% url 'sent_tasks' %}" class="btn" style="background: #4f46e5; color: white;">📋 View Sent Tasks</a>
-                <a href="{% url 'tasks_list_by_project' project.id %}" class="btn" style="background: #ff9800; color: white;">📌 View All Tasks</a>
+                {% if is_owner %}
+                    <a href="{% url 'update_project' project.id %}" class="btn" style="background: #3b82f6; color: white;">✏️ Edit</a>
+                    <a href="{% url 'delete_project' project.id %}" class="btn" style="background: #ef4444; color: white;">🗑️ Delete</a>
+                    <a href="{% url 'create_task' project.id %}" class="btn" style="background: #10b981; color: white;">📝 Create New Task</a>
+                    <a href="{% url 'sent_tasks' %}" class="btn" style="background: #c546e5; color: white;">📋 View Sent Tasks</a>
+                    <a href="{% url 'tasks_list_by_project' project.id %}" class="btn" style="background: #ff9800; color: white;">📌 View All Tasks</a>
+                    <a href="{% url 'create_meeting' %}" class="btn" style="background: #8e44ad; color: white;">📅 Create Meeting</a>
+                {% endif %}
+                
+                <!--  يظهر للجميع -->
+                <a href="{% url 'project_chat' project.id %}" class="btn" style="background: #0d9488; color: white;">💬 Project Chat</a>
             </div>
-                                                
-        <div class="file-section">
+                    <div class="file-section">
             <h2>📂 Main Files</h2>
             <table>
                 <thead>
