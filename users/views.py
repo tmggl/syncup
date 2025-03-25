@@ -84,7 +84,7 @@ def dashboard_view(request):
     user = request.user
     today = timezone.localdate()
 
-    # ✅ عد المهام النشطة فقط للمستخدم (ولها موعد اليوم أو بعده)
+    
     pending_tasks_count = Task.objects.filter(
         assigned_to=user,
         status__in=['new', 'pending', 'in_progress', 'urgent'],
@@ -92,20 +92,19 @@ def dashboard_view(request):
         due_date__gte=today
     ).count()
 
-    # ✅ عد المهام المكتملة فقط للمستخدم
+    
     completed_tasks_count = Task.objects.filter(
         assigned_to=user,
         status='completed'
     ).count()
 
-    # ✅ أول مهمة قادمة (حسب التاريخ فقط)
+    #
     upcoming_task = Task.objects.filter(
         assigned_to=user,
         due_date__isnull=False,
         due_date__gte=today
     ).order_by('due_date').first()
 
-    # ✅ أول اجتماع قادم (كمشارك أو خبير)
     upcoming_meeting = Meeting.objects.filter(
         Q(participants=user) | Q(expert=user),
         date__isnull=False,
@@ -127,7 +126,7 @@ def dashboard_view(request):
     return render(request, 'dashboard.html', context)
 @login_required
 def expert_dashboard_view(request):
-    return render(request, 'expert_dashboard.html')  # ✅ تأكد من وجود expert_dashboard.html
+    return render(request, 'expert_dashboard.html')  # 
 
 @login_required
 def join_requests_view(request):
@@ -149,7 +148,7 @@ def check_phone_number(request):
 
 @login_required
 def expert_special_feature_view(request):
-    return render(request, 'expert_feature.html')  # ✅ تأكد من وجود expert_feature.html
+    return render(request, 'expert_feature.html')  # 
 
 
 
@@ -158,11 +157,11 @@ def settings_view(request):
     user = request.user  # جلب بيانات المستخدم الحالية
 
     if request.method == "POST":
-        # إذا كان المستخدم يقوم فقط بتحديث الصورة، نُعيد JSON بدلاً من إعادة تحميل الصفحة
+        
         if "profile_image" in request.FILES:
             user.profile_image = request.FILES["profile_image"]
             user.save()
-            return JsonResponse({"success": True, "image_url": user.profile_image.url})  # ✅ إرجاع JSON
+            return JsonResponse({"success": True, "image_url": user.profile_image.url})  # 
 
         form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
         password_form = PasswordChangeForm(user, request.POST)

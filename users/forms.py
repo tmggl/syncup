@@ -2,30 +2,44 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
 
-# ✅ نموذج تسجيل مستخدم جديد
 class CustomUserCreationForm(UserCreationForm):
     phone_number = forms.CharField(
         max_length=10,
         required=True,
-        help_text="رقم الجوال يجب أن يبدأ بـ 05 ويكون مكونًا من 10 أرقام."
+        help_text="Phone number must start with 05 and be exactly 10 digits."
     )
+
     role = forms.ChoiceField(
-        choices=[('admin', 'Admin'), ('manager', 'Manager'), ('member', 'Member')], 
+        choices=CustomUser.ROLE_CHOICES,  #  use choices from the model
         required=True
     )
+
     profile_image = forms.ImageField(
-        required=False,  # السماح للمستخدم بعدم رفع صورة أثناء التسجيل
-        help_text="يمكنك رفع صورة شخصية، أو سيتم تعيين صورة افتراضية."
+        required=False,
+        help_text="You can upload a profile image or keep the default one."
     )
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'phone_number', 'role', 'profile_image', 'password1', 'password2']
+        fields = [
+            'username',
+            'email',
+            'phone_number',
+            'role',
+            'profile_image',
+            'password1',
+            'password2'
+        ]
 
-# ✅ نموذج تحديث بيانات المستخدم (للاستخدام في صفحة الإعدادات)
 class ProfileUpdateForm(UserChangeForm):
-    password = None  # منع تعديل كلمة المرور في هذا النموذج
+    password = None  # Hide the password field
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'phone_number', 'role', 'profile_image']
+        fields = [
+            'username',
+            'email',
+            'phone_number',
+            'role',
+            'profile_image'
+        ]

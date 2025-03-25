@@ -5,14 +5,14 @@ from django.core.validators import RegexValidator
 class CustomUser(AbstractUser):
     phone_regex = RegexValidator(
         regex=r'^05\d{8}$', 
-        message="رقم الجوال يجب أن يبدأ بـ 05 ويحتوي على 10 أرقام فقط."
+        message="Phone number must start with 05 and be exactly 10 digits."
     )
     
     phone_number = models.CharField(
         max_length=10, 
         unique=True, 
         validators=[phone_regex],
-        help_text="رقم الجوال يجب أن يبدأ بـ 05 ويكون مكونًا من 10 أرقام."
+        help_text="Phone number must start with 05 and contain exactly 10 digits."
     )
 
     ROLE_CHOICES = [
@@ -33,16 +33,16 @@ class CustomUser(AbstractUser):
         null=True
     )
 
-    #  الحقول : التعريف والسيرة الذاتية
+    # Bio fields: short and full
     short_bio = models.CharField(
         max_length=15,
         blank=True,
-        help_text="وصف مختصر (مثال: AI Expert, UI Guru)"
+        help_text="Short description (e.g., AI Expert, UI Guru)."
     )
 
     full_bio = models.TextField(
         blank=True,
-        help_text="سيرة ذاتية تفصيلية أو نبذة تعريفية"
+        help_text="Detailed biography or personal summary."
     )
 
     groups = models.ManyToManyField(
