@@ -9,7 +9,8 @@ from django.http import JsonResponse
 from django.http import HttpResponseForbidden
 from .models import Message
 from django.db.models import Count
-from .models import ExpertRating  # تأكد أنك أضفت هذا السطر في أعلى الملف
+from .models import ExpertRating  
+
 
 from django.db.models import Avg
 
@@ -230,6 +231,16 @@ def rate_expert(request, expert_id):
 def expert_reviews(request, expert_id):
     expert = get_object_or_404(CustomUser, id=expert_id, role='expert')
     ratings = ExpertRating.objects.filter(expert=expert).order_by('-created_at')
+
+    # ✅ الرد على التقييم (مسموح فقط للخبير نفسه)
+    if request.method == 'POST' and request.user == expert:
+        rating_id = request.POST.get('rating_id')
+        reply = request.POST.get('reply', '').strip()
+        if rating_id and reply:
+            rating = get_object_or_404(ExpertRating, id=rating_id, expert=expert)
+            rating.reply = reply
+            rating.save()
+            return redirect('expert_reviews', expert_id=expert.id)
 
     return render(request, 'expert_reviews.html', {
         'expert': expert,

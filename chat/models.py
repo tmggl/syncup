@@ -60,6 +60,7 @@ class Message(models.Model):
         return self.attachment and not self.is_image() and not self.is_audio()
 
 
+
 class ExpertRating(models.Model):
     expert = models.ForeignKey(
         CustomUser,
@@ -78,10 +79,11 @@ class ExpertRating(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
     comment = models.TextField(blank=True)
+    reply = models.TextField(blank=True, null=True)  
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ['expert', 'user']  # لا يمكن لمستخدم تقييم نفس الخبير أكثر من مرة
+        unique_together = ['expert', 'user']
 
     def __str__(self):
         return f"{self.user} rated {self.expert} - {self.rating}"

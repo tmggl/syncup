@@ -243,19 +243,26 @@
         </div>
 
         <div class="nav-links">
-            <a href="{% url 'dashboard' %}" class="nav-link">
-                <i class="fas fa-chart-line"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{% url 'projects_list' %}" class="nav-link">
-                <i class="fas fa-folder-open"></i>
-                <span>Projects</span>
-            </a>
+
+            {% if user.role != 'expert' %}
+                <a href="{% url 'dashboard' %}" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'projects_list' %}" class="nav-link">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Projects</span>
+                </a>
+            {% endif %}
 
             {% if user.role == 'expert' %}
                 <a href="{% url 'expert_availability_manage' %}" class="nav-link">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Availability</span>
+                </a>
+                <a href="{% url 'edit_expert_bio' %}" class="nav-link">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Edit Bio</span>
                 </a>
             {% else %}
                 <a href="{% url 'meeting_list' %}" class="nav-link">

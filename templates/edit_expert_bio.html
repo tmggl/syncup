@@ -1,0 +1,282 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Profile | Expert Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2A4E6E;
+            --secondary-color: #3A6B9B;
+            --accent-color: #FFD15C;
+            --background-light: #F8F9FF;
+            --text-dark: #2D3748;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            background: var(--background-light);
+            color: var(--text-dark);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+            padding: 6rem 0 2rem; /* بدل 2rem 0 */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .profile-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .bio-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .bio-section {
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid #EEE;
+            padding-bottom: 2rem;
+        }
+
+        .bio-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .bio-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .bio-content {
+            background: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #E2E8F0;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 1.25rem;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(255,209,92,0.2);
+            outline: none;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .alert-message {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #48BB78;
+            color: white;
+            padding: 1.25rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .bio-card {
+                padding: 1.5rem;
+            }
+            
+            .profile-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <main>
+
+        <div class="container">
+            {% if messages %}
+            <div class="alert-message">
+                <i class="fas fa-check-circle"></i>
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+                <div class="progress-bar"></div>
+            </div>
+            {% endif %}
+
+            <!-- Display Mode -->
+            <div id="bio-display" class="bio-card">
+                <section class="bio-section">
+                    <div class="bio-label">
+                        <i class="fas fa-tag"></i>
+                        Professional Tagline
+                    </div>
+                    <p class="bio-content">
+                        {{ request.user.short_bio|default:"Add your professional tagline (15 characters max)" }}
+                    </p>
+                </section>
+
+                <section class="bio-section">
+                    <div class="bio-label">
+                        <i class="fas fa-file-alt"></i>
+                        Detailed Biography
+                    </div>
+                    <div class="bio-content">
+                        {{ request.user.full_bio|default:"Describe your expertise, experience, and achievements in detail..."|linebreaks }}
+                    </div>
+                </section>
+
+                <button onclick="toggleEdit(true)" class="btn-action btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Edit Profile
+                </button>
+            </div>
+
+            <!-- Edit Mode -->
+            <div id="bio-edit" class="bio-card" style="display: none;">
+                <form method="post" class="bio-form">
+                    {% csrf_token %}
+                    
+                    <section class="bio-section">
+                        <div class="bio-label">
+                            <i class="fas fa-heading"></i>
+                            Professional Tagline
+                        </div>
+                        <input type="text" 
+                               name="short_bio" 
+                               value="{{ request.user.short_bio }}"
+                               maxlength="15"
+                               class="form-input"
+                               placeholder="Senior Marketing Strategist">
+                    </section>
+
+                    <section class="bio-section">
+                        <div class="bio-label">
+                            <i class="fas fa-file-signature"></i>
+                            Detailed Biography
+                        </div>
+                        <textarea name="full_bio" 
+                                  class="form-textarea"
+                                  rows="6"
+                                  placeholder="Detail your professional journey...">{{ request.user.full_bio }}</textarea>
+                    </section>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-action btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                        <button type="button" 
+                                onclick="toggleEdit(false)" 
+                                class="btn-action btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleEdit(showForm) {
+            const displaySection = document.getElementById('bio-display');
+            const editSection = document.getElementById('bio-edit');
+            
+            if(showForm) {
+                displaySection.style.display = 'none';
+                editSection.style.display = 'block';
+                window.scrollTo({
+                    top: editSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            } else {
+                displaySection.style.display = 'block';
+                editSection.style.display = 'none';
+            }
+        }
+
+        // Auto-remove success message
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert-message');
+            alerts.forEach(alert => alert.remove());
+        }, 5000);
+    </script>
+</body>
+</html>

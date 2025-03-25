@@ -222,6 +222,26 @@
       <p class="dashboard-subtitle">Manage your expert schedule efficiently</p>
     </div>
 
+    <!-- Expert Info Card Start -->
+    <div style="background: var(--surface); box-shadow: var(--shadow); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; display: flex; align-items: center; gap: 20px;">
+      <img src="{{ expert.profile_image.url }}" alt="{{ expert.username }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);" />
+      <div style="flex: 1;">
+        <h2 style="margin-bottom: 6px;">{{ expert.get_full_name|default:expert.username }}</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.9rem; color: var(--text-muted);">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            ⭐ {{ expert.avg_rating|default:"4.9" }}
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            🎯 {{ expert.session_count|default:"100" }}+ sessions
+          </div>
+        </div>
+        <div style="margin-top: 10px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="{% url 'expert_reviews' expert.id %}" class="action-btn btn-edit">📝 View Reviews</a>
+        </div>
+      </div>
+    </div>
+    <!-- Expert Info Card End -->
+
     <form class="management-form" method="post">
       {% csrf_token %}
       <div class="form-grid">

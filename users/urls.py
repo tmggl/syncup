@@ -1,5 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from .views import edit_expert_bio
 from .views import (
     home_view, users_list, login_view, logout_view, register_view, dashboard_view,
     check_username, check_phone_number, settings_view, registration_success,
@@ -24,6 +25,7 @@ urlpatterns = [
 
     # ✅ ميزات الخبراء الخاصة
     path('expert-feature/', expert_special_feature_view, name='expert_special_feature'),
+     path('expert/edit-bio/', edit_expert_bio, name='edit_expert_bio'),
 
     # ✅ قائمة المستخدمين
     path('list/', users_list, name='users_list'),

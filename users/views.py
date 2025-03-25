@@ -9,6 +9,11 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import ProfileUpdateForm  
 from django.contrib.auth.forms import PasswordChangeForm
 from projects.models import JoinRequest  
+from tasks.models import Task
+from meetings.models import Meeting
+from django.db.models import Q
+from django.utils import timezone
+
 
 # استيراد نموذج المستخدم المخصص
 CustomUser = get_user_model()
@@ -71,19 +76,58 @@ def users_list(request):
     return render(request, 'users_list.html', {'users': users, 'query': query})
 
 # عرض لوحة التحكم بناءً على دور المستخدم
+
+
+
 @login_required
 def dashboard_view(request):
-    """توجيه المستخدم إلى لوحة التحكم المناسبة بناءً على دوره."""
+    user = request.user
+    today = timezone.localdate()
+
+    # ✅ عد المهام النشطة فقط للمستخدم (ولها موعد اليوم أو بعده)
+    pending_tasks_count = Task.objects.filter(
+        assigned_to=user,
+        status__in=['new', 'pending', 'in_progress', 'urgent'],
+        due_date__isnull=False,
+        due_date__gte=today
+    ).count()
+
+    # ✅ عد المهام المكتملة فقط للمستخدم
+    completed_tasks_count = Task.objects.filter(
+        assigned_to=user,
+        status='completed'
+    ).count()
+
+    # ✅ أول مهمة قادمة (حسب التاريخ فقط)
+    upcoming_task = Task.objects.filter(
+        assigned_to=user,
+        due_date__isnull=False,
+        due_date__gte=today
+    ).order_by('due_date').first()
+
+    # ✅ أول اجتماع قادم (كمشارك أو خبير)
+    upcoming_meeting = Meeting.objects.filter(
+        Q(participants=user) | Q(expert=user),
+        date__isnull=False,
+        date__gte=today
+    ).order_by('date', 'time').first()
+
     context = {
-        'user': request.user,
-        'is_expert': request.user.role == 'expert',  # ✅ تمرير `is_expert` إلى القالب
+        'user': user,
+        'is_expert': user.role == 'expert',
+        'pending_tasks_count': pending_tasks_count,
+        'completed_tasks_count': completed_tasks_count,
+        'upcoming_task': upcoming_task,
+        'upcoming_meeting': upcoming_meeting,
     }
-    if request.user.role == 'expert':
+
+    if user.role == 'expert':
         return render(request, 'expert_dashboard.html', context)
+
     return render(request, 'dashboard.html', context)
 @login_required
 def expert_dashboard_view(request):
-    return render(request, 'expert_dashboard.html')  # ✅ تأكد من وجود `expert_dashboard.html`
+    return render(request, 'expert_dashboard.html')  # ✅ تأكد من وجود expert_dashboard.html
 
 @login_required
 def join_requests_view(request):
@@ -105,7 +149,7 @@ def check_phone_number(request):
 
 @login_required
 def expert_special_feature_view(request):
-    return render(request, 'expert_feature.html')  # ✅ تأكد من وجود `expert_feature.html`
+    return render(request, 'expert_feature.html')  # ✅ تأكد من وجود expert_feature.html
 
 
 
@@ -140,3 +184,21 @@ def settings_view(request):
         password_form = PasswordChangeForm(user)
 
     return render(request, "settings.html", {"form": form, "password_form": password_form, "user": user})
+
+@login_required
+def edit_expert_bio(request):
+    if request.user.role != 'expert':
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        short_bio = request.POST.get('short_bio', '').strip()[:15]
+        full_bio = request.POST.get('full_bio', '').strip()
+
+        request.user.short_bio = short_bio
+        request.user.full_bio = full_bio
+        request.user.save()
+
+        messages.success(request, "Your expert profile has been updated successfully.")
+        return redirect('edit_expert_bio')
+
+    return render(request, 'edit_expert_bio.html')

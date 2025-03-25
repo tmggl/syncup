@@ -7,6 +7,9 @@ from projects.models import Project
 from .forms import ManualMeetingForm
 from django.utils import timezone
 from django.db.models import Q
+from django.db.models import Avg
+from chat.models import ExpertRating
+
 # ✅ List all meetings related to the user
 
 @login_required
@@ -195,6 +198,7 @@ def request_expert_meeting(request):
         'selected_expert': expert
     })
 
+
 @login_required
 def expert_availability_manage(request):
     if request.user.role != 'expert':
@@ -213,13 +217,23 @@ def expert_availability_manage(request):
         messages.success(request, "Time slot added successfully.")
         return redirect('expert_availability_manage')
 
-    # ✅ جلب المواعيد المرتبطة بالخبير مع الاجتماعات المرتبطة (إذا وجدت)
+    # ✅ جلب المواعيد الخاصة بالخبير
     slots = ExpertAvailability.objects.filter(
         expert=request.user
     ).order_by('date', 'start_time')
 
+    # ✅ حساب عدد الجلسات والتقييم
+    session_count = Meeting.objects.filter(expert=request.user).count()
+    avg_rating = ExpertRating.objects.filter(expert=request.user).aggregate(avg=Avg('rating'))['avg'] or 0.0
+
+
+    expert = request.user
+    expert.session_count = session_count
+    expert.avg_rating = round(avg_rating, 1)
+
     return render(request, 'expert_availability_manage.html', {
-        'slots': slots
+        'slots': slots,
+        'expert': expert,  # 🟢 هنا نمرر المتغير للقالب
     })
 
 @login_required

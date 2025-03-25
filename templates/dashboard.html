@@ -157,91 +157,74 @@
 <body>
     {% include 'navbar.html' %}  <!-- ✅ تضمين الشريط العلوي -->
 
-<div class="dashboard-container">
-    <!-- ✅ ترحيب المستخدم -->
-    <div class="welcome-section">
-        <h1>Hello, {{ user.username }} 👋</h1>
-        <p>Welcome to your professional dashboard!</p>
-    </div>
-
-    <!-- ✅ كروت الإحصائيات -->
-    <div class="cards-grid">
-        <!-- ✅ كرت الطلبات الواردة والصادرة -->
-        <div class="dashboard-card stats-card">
-            <h2>Join Requests</h2>
-            <p>📩 Received: {{ received_requests_count }}</p>
-            <p>📤 Sent: {{ sent_requests_count }}</p>
-            <a href="{% url 'received_invitations' %}" class="view-projects-btn">View Invitations</a>
+    <div class="dashboard-container">
+        <!-- ✅ ترحيب المستخدم -->
+        <div class="welcome-section">
+            <h1>Hello, {{ user.username }} 👋</h1>
+            <p>Welcome to your professional dashboard!</p>
         </div>
 
-        <!-- ✅ كرت "مشاريعي" -->
-        <div class="dashboard-card stats-card">
-            <h2>My Projects</h2>
-            <p>{{ projects_count }}</p>
-            <a href="{% url 'projects_list' %}" class="view-projects-btn">View Projects</a>
-        </div>
+        <!-- ✅ كروت الإحصائيات -->
+        <div class="cards-grid">
 
-        <!-- ✅ كرت المهام المكتملة -->
-        <div class="dashboard-card stats-card">
-            <h2>Completed Tasks</h2>
-            <p>{{ completed_tasks_count }}</p>
-        </div>
-
-        <!-- ✅ كرت المهام  -->
-        <div class="dashboard-card stats-card">
-            <h2>Pending Tasks</h2>
-            <p>{{ pending_tasks_count }}</p>
-            <a href="{% url 'tasks_list' %}" class="view-projects-btn">View Pending Tasks</a>
-        </div>
-        
-        <!-- ✅ كرت تقييم المستخدم -->
-        <div class="dashboard-card stats-card">
-            <h2>Your Rating</h2>
-            <p>⭐ {{ user_rating }}/5</p>
-        </div>
-
-        <!-- ✅ كرت المهام والاجتماعات القادمة -->
-        <div class="dashboard-card task-meeting-card">
-            <h3>Today's Tasks & Meetings</h3>
-            
-            <div class="task-list">
-                <h4>Today's Tasks:</h4>
-                {% for task in tasks_today %}
-                    <div class="task-item">
-                        <span>{{ task.title }}</span>
-                        <span>{{ task.due_date }}</span>
-                    </div>
-                {% empty %}
-                    <p>No tasks for today.</p>
-                {% endfor %}
+            <!-- ✅ كرت الطلبات الواردة والصادرة -->
+            <div class="dashboard-card stats-card">
+                <h2>Join Requests</h2>
+                <p>📩 Received: {{ received_requests_count }}</p>
+                <p>📤 Sent: {{ sent_requests_count }}</p>
+                <a href="{% url 'received_invitations' %}" class="view-projects-btn">View Invitations</a>
             </div>
-            
-            <div class="task-list">
-                <h4>Upcoming Task:</h4>
-                {% if upcoming_task %}
-                    <div class="task-item">
-                        <span>{{ upcoming_task.title }}</span>
-                        <span>{{ upcoming_task.due_date }}</span>
-                    </div>
-                {% else %}
-                    <p>No upcoming tasks.</p>
-                {% endif %}
+
+            <!-- ✅ كرت "مشاريعي" -->
+            <div class="dashboard-card stats-card">
+                <h2>My Projects</h2>
+                <p>{{ projects_count }}</p>
+                <a href="{% url 'projects_list' %}" class="view-projects-btn">View Projects</a>
             </div>
-            
-            <div class="meeting-list">
-                <h4>Meetings:</h4>
-                {% for meeting in meetings_today %}
-                    <div class="meeting-item">
-                        <span>{{ meeting.title }}</span>
-                        <span>{{ meeting.date|date:"M d, Y" }} - {{ meeting.time }}</span>
-                    </div>
-                {% empty %}
-                    <p>No meetings scheduled.</p>
-                {% endfor %}
+
+            <!-- ✅ كرت المهام الموحد -->
+            <div class="dashboard-card stats-card">
+                <h2>Tasks Overview</h2>
+                <a href="{% url 'tasks_list' %}" class="view-projects-btn">View Tasks</a>
+            </div>
+
+            <!-- ✅ كرت تقييم المستخدم -->
+            <div class="dashboard-card stats-card">
+                <h2>Your Rating</h2>
+                <p>⭐ {{ user_rating }}/5</p>
+            </div>
+
+            <!-- ✅ كرت المهام والاجتماعات -->
+            <div class="dashboard-card task-meeting-card">
+                <h3>Upcoming Task & Meeting</h3>
+
+                <!-- ✅ المهمة القادمة -->
+                <div class="task-list">
+                    <h4>Task:</h4>
+                    {% if upcoming_task %}
+                        <div class="task-item">
+                            <span>{{ upcoming_task.title }}</span>
+                            <span>{{ upcoming_task.due_date }}</span>
+                        </div>
+                    {% else %}
+                        <p>No tasks available.</p>
+                    {% endif %}
+                </div>
+
+                <!-- ✅ الاجتماع القادم -->
+                <div class="meeting-list">
+                    <h4>Meeting:</h4>
+                    {% if upcoming_meeting %}
+                        <div class="meeting-item">
+                            <span>{{ upcoming_meeting.title }}</span>
+                            <span>{{ upcoming_meeting.date|date:"M d, Y" }} - {{ upcoming_meeting.time }}</span>
+                        </div>
+                    {% else %}
+                        <p>No meetings available.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
-
 </body>
 </html>

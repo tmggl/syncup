@@ -194,6 +194,11 @@
           <img src="{{ expert.profile_image.url }}" alt="{{ expert.username }}" class="expert-avatar">
           <div class="expert-info">
             <div class="expert-name">{{ expert.get_full_name|default:expert.username }}</div>
+
+            {% if expert.short_bio %}
+              <div style="color: var(--text-muted); font-size: 0.9rem;">{{ expert.short_bio }}</div>
+            {% endif %}
+
             <div class="expert-meta">
               <div class="badge">
                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -216,6 +221,11 @@
           <a href="{% url 'rate_expert' expert.id %}" class="action-button secondary-button">⭐ Rate</a>
           <a href="{% url 'expert_reviews' expert.id %}" class="action-button secondary-button">📝 Reviews</a>
           <a href="{% url 'request_expert_meeting' %}?expert_id={{ expert.id }}" class="action-button secondary-button">📅 Book Meeting</a>
+
+          {% if expert.full_bio %}
+          <button onclick="showBioModal(`{{ expert.get_full_name|default:expert.username }}`, `{{ expert.full_bio|escapejs }}`)"
+                  class="action-button secondary-button">📄 View Profile</button>
+          {% endif %}
         </div>
       </div>
       {% endfor %}
@@ -227,5 +237,24 @@
     </div>
     {% endif %}
   </div>
+
+  <!-- 🌟 Modal for Full Bio -->
+  <div id="bio-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999;">
+    <div style="max-width: 600px; margin: 100px auto; background: white; border-radius: 12px; padding: 24px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+      <button onclick="document.getElementById('bio-modal').style.display='none'" 
+              style="position: absolute; top: 10px; right: 15px; font-size: 20px; background: none; border: none;">&times;</button>
+      <h3 id="bio-name" style="margin-bottom: 10px; color: var(--text-main); font-size: 1.25rem;"></h3>
+      <p id="bio-content" style="white-space: pre-line; color: var(--text-muted); font-size: 0.95rem;"></p>
+    </div>
+  </div>
+
+  <!-- 📜 Script for Modal -->
+  <script>
+    function showBioModal(name, bio) {
+      document.getElementById('bio-name').innerText = name;
+      document.getElementById('bio-content').innerText = bio;
+      document.getElementById('bio-modal').style.display = 'block';
+    }
+  </script>
 </body>
 </html>

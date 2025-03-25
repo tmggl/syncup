@@ -16,22 +16,33 @@ class CustomUser(AbstractUser):
     )
 
     ROLE_CHOICES = [
-        ('member', 'Member'),  # العضو العادي
-        ('expert', 'Expert')   # الخبير
+        ('member', 'Member'),
+        ('expert', 'Expert')
     ]
 
     role = models.CharField(
-    max_length=10, 
-    choices=ROLE_CHOICES, 
-    default='member'
+        max_length=10, 
+        choices=ROLE_CHOICES, 
+        default='member'
     )
 
-    #  أضف السطر هنا بعد role
     profile_image = models.ImageField(
-    upload_to='profile_pics/', 
-    default='profile_pics/p.png',  # تعيين صورة افتراضية عند إنشاء الحساب
-    blank=True,
-    null=True
+        upload_to='profile_pics/', 
+        default='profile_pics/p.png',
+        blank=True,
+        null=True
+    )
+
+    #  الحقول : التعريف والسيرة الذاتية
+    short_bio = models.CharField(
+        max_length=15,
+        blank=True,
+        help_text="وصف مختصر (مثال: AI Expert, UI Guru)"
+    )
+
+    full_bio = models.TextField(
+        blank=True,
+        help_text="سيرة ذاتية تفصيلية أو نبذة تعريفية"
     )
 
     groups = models.ManyToManyField(
