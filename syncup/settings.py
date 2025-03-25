@@ -8,7 +8,7 @@ SECRET_KEY = config('SECRET_KEY', default='fallback-secret-key')
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 # Hosts
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'syncup-1kfw.onrender.com']
 # Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
