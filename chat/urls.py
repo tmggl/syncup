@@ -34,5 +34,8 @@ urlpatterns = [
     path('start/', views.start_private_chat, name='start_private_chat'),
     path('search-users/', views.search_users, name='search_users'),
     path('message/<int:message_id>/delete/', views.delete_message, name='delete_message'),
-
+    path('experts/<int:expert_id>/rate/', views.rate_expert, name='rate_expert'),
+    path('experts/<int:expert_id>/reviews/', views.expert_reviews, name='expert_reviews'),
 ]
+
+

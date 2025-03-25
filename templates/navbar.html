@@ -251,10 +251,19 @@
                 <i class="fas fa-folder-open"></i>
                 <span>Projects</span>
             </a>
-            <a href="{% url 'meeting_list' %}" class="nav-link">
-                <i class="fas fa-video"></i>
-                <span>Meetings</span>
-            </a>
+
+            {% if user.role == 'expert' %}
+                <a href="{% url 'expert_availability_manage' %}" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Availability</span>
+                </a>
+            {% else %}
+                <a href="{% url 'meeting_list' %}" class="nav-link">
+                    <i class="fas fa-video"></i>
+                    <span>Meetings</span>
+                </a>
+            {% endif %}
+
             <a href="{% url 'chat_list' %}" class="nav-link">
                 <i class="fas fa-comments"></i>
                 <span>Chat</span>
@@ -294,7 +303,7 @@
 
         // Smooth scroll behavior
         document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
+            link.addEventListener('click', () => {
                 if (navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
                 }

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Expert Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --danger: #ef4444;
+      --background: #f1f5f9;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --radius: 12px;
+      --shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .dashboard-container {
+      max-width: 1000px;
+      margin: 80px auto;
+      padding: 0 16px;
+    }
+
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .dashboard-title {
+      font-size: 2.25rem;
+      font-weight: bold;
+    }
+
+    .dashboard-subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .management-form, .slots-container {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .form-actions {
+      text-align: right;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .slot-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .slot-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .slot-info {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .slot-time, .slot-date {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .slot-status {
+      font-size: 0.875rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    .status-available {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .status-booked {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .slot-divider {
+      margin: 16px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .slot-details {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .slot-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-edit {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary);
+    }
+
+    .btn-edit:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .btn-delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Availability Management</h1>
+      <p class="dashboard-subtitle">Manage your expert schedule efficiently</p>
+    </div>
+
+    <form class="management-form" method="post">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div>
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" name="date" required />
+        </div>
+        <div>
+          <label class="form-label">Start Time</label>
+          <input type="time" class="form-input" name="start_time" required />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add New Slot</button>
+      </div>
+    </form>
+
+    <div class="slots-container">
+      <h2>Your Availability & Meetings</h2>
+      {% if slots %}
+        <div class="slot-list">
+          {% for slot in slots %}
+            <div class="slot-item">
+              <div class="slot-info">
+                <div>
+                  <div class="slot-time">🕒 {{ slot.start_time }}</div>
+                  <div class="slot-date">📅 {{ slot.date }}</div>
+                </div>
+                <span class="slot-status {{ slot.is_booked|yesno:'status-booked,status-available' }}">
+                  {{ slot.is_booked|yesno:"Booked,Available" }}
+                </span>
+              </div>
+
+              {% if slot.meeting %}
+                <div class="slot-divider"></div>
+                <div class="slot-details">
+                  <strong>Title:</strong> {{ slot.meeting.title }}<br />
+                  <strong>Requested by:</strong>
+                  {% if slot.meeting.created_by %}
+                    {{ slot.meeting.created_by.get_full_name|default:slot.meeting.created_by.username }}
+                  {% else %} Unknown {% endif %}<br />
+                  <strong>Project:</strong>
+                  {% if slot.meeting.project %}{{ slot.meeting.project.name }}{% else %}No Project{% endif %}<br />
+                  <strong>Status:</strong>
+                  {% if slot.meeting.status == 'pending' %}
+                    ⏳ Pending
+                  {% elif slot.meeting.status == 'approved' %}
+                    ✅ Approved
+                  {% elif slot.meeting.status == 'rejected' %}
+                    ❌ Rejected
+                  {% elif slot.meeting.status == 'cancelled' %}
+                    🚫 Cancelled
+                  {% endif %}
+                </div>
+
+                <div class="slot-actions">
+                  {% if slot.meeting.status == 'pending' %}
+                    <a href="{% url 'approve_expert_meeting' slot.meeting.id %}" class="action-btn btn-edit">✅ Approve & Add Link</a>
+                    <form method="post" action="{% url 'reject_meeting' slot.meeting.id %}">
+                      {% csrf_token %}
+                      <button type="submit" class="action-btn btn-delete">❌ Reject</button>
+                    </form>
+                  {% elif slot.meeting.status == 'approved' and slot.meeting.meeting_link %}
+                    <a href="{{ slot.meeting.meeting_link }}" target="_blank" class="action-btn btn-primary">🔗 Join</a>
+                  {% endif %}
+                </div>
+              {% else %}
+                <div class="slot-actions">
+                  <form method="post" action="{% url 'delete_availability_slot' slot.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="action-btn btn-delete">🗑️ Delete</button>
+                  </form>
+                  <a href="{% url 'edit_availability_slot' slot.id %}" class="action-btn btn-edit">✏️ Edit</a>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <h3>No Available Slots</h3>
+          <p>Add your first availability slot using the form above</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

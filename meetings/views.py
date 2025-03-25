@@ -5,23 +5,22 @@ from .models import Meeting, ExpertAvailability
 from users.models import CustomUser
 from projects.models import Project
 from .forms import ManualMeetingForm
-import uuid
 from django.utils import timezone
 from django.db.models import Q
 # ✅ List all meetings related to the user
 
 @login_required
 def meeting_list(request):
-    today = timezone.localdate()
-
-    # ✅ الاجتماعات التي يشارك فيها المستخدم أو هو الخبير
     meetings = Meeting.objects.filter(
-        (Q(participants=request.user) | Q(expert=request.user)),
-        date__gte=today
-    ).order_by('date', 'time')
+        Q(participants=request.user) | Q(expert=request.user)
+    ).order_by('-date', '-time')  # ترتيب من الأحدث إلى الأقدم
 
-    return render(request, 'meetings_list.html', {'meetings': meetings})
+    today = timezone.localdate()  # نحتفظ به لاستخدامه في القالب
 
+    return render(request, 'meetings_list.html', {
+        'meetings': meetings,
+        'today': today  # نمرره للقالب
+    })
 
 # ✅ Show meeting details
 @login_required
@@ -122,48 +121,143 @@ def delete_meeting(request, meeting_id):
 @login_required
 def approve_expert_meeting(request, meeting_id):
     meeting = get_object_or_404(Meeting, id=meeting_id)
+
+    # فقط الخبير يستطيع الموافقة
     if request.user != meeting.expert:
         messages.error(request, "You are not authorized to approve this meeting.")
         return redirect('meeting_list')
 
-    if not meeting.meeting_link:
-        meeting.meeting_link = f"https://meet.example.com/{uuid.uuid4()}"
-        meeting.save()
-        messages.success(request, "Meeting link generated successfully.")
+    if request.method == 'POST':
+        meeting_link = request.POST.get('meeting_link')
+        platform = request.POST.get('platform', 'zoom')
 
-    return redirect('meeting_detail', meeting_id=meeting.id)
+        meeting.meeting_link = meeting_link
+        meeting.platform = platform
+        meeting.status = 'approved'
+        meeting.save()
+
+        messages.success(request, "Meeting approved and link saved.")
+        return redirect('meeting_detail', meeting_id=meeting.id)
+
+    return render(request, 'approve_meeting.html', {'meeting': meeting})
 
 
 # ✅ Request a meeting with an expert from available slots
+
 @login_required
 def request_expert_meeting(request):
+    expert_id = request.GET.get('expert_id')
     experts = CustomUser.objects.filter(role='expert')
-    available_slots = ExpertAvailability.objects.filter(is_booked=False)
+    all_slots = ExpertAvailability.objects.all()
+
+    if expert_id:
+        expert = get_object_or_404(CustomUser, id=expert_id, role='expert')
+        experts = [expert]
+        all_slots = all_slots.filter(expert=expert).order_by('date', 'start_time')
+
+        # ✅ حساب عدد الاجتماعات لهذا الخبير
+        session_count = Meeting.objects.filter(expert=expert).count()
+        expert.session_count = session_count  # مؤقت للعرض في القالب فقط
+    else:
+        expert = None
+        all_slots = all_slots.order_by('date', 'start_time')
 
     if request.method == 'POST':
-        expert_id = request.POST.get('expert')
         slot_id = request.POST.get('slot')
         subject = request.POST.get('subject')
 
-        expert = get_object_or_404(CustomUser, id=expert_id, role='expert')
-        slot = get_object_or_404(ExpertAvailability, id=slot_id, expert=expert, is_booked=False)
+        slot = get_object_or_404(ExpertAvailability, id=slot_id, is_booked=False)
+        expert = slot.expert
 
+        # ✅ إنشاء الاجتماع مع ربط الموعد availability بالاجتماع
         meeting = Meeting.objects.create(
             title=subject,
             date=slot.date,
             time=slot.start_time,
-            expert=expert
+            expert=expert,
+            status='pending',
+            created_by=request.user,
+            availability=slot  # ✅ الربط المهم هنا
         )
         meeting.participants.add(request.user)
         meeting.save()
 
+        # ✅ تأشير الموعد على أنه تم حجزه
         slot.is_booked = True
         slot.save()
 
-        messages.success(request, f"Meeting with {expert.username} scheduled successfully.")
+        messages.success(request, f"Your request to meet with {expert.get_full_name() or expert.username} has been submitted. Awaiting approval.")
         return redirect('meeting_list')
 
     return render(request, 'request_expert_meeting.html', {
         'experts': experts,
-        'available_slots': available_slots
+        'available_slots': all_slots,
+        'selected_expert': expert
     })
+
+@login_required
+def expert_availability_manage(request):
+    if request.user.role != 'expert':
+        return redirect('meeting_list')
+
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        start_time = request.POST.get('start_time')
+
+        ExpertAvailability.objects.create(
+            expert=request.user,
+            date=date,
+            start_time=start_time,
+            is_booked=False
+        )
+        messages.success(request, "Time slot added successfully.")
+        return redirect('expert_availability_manage')
+
+    # ✅ جلب المواعيد المرتبطة بالخبير مع الاجتماعات المرتبطة (إذا وجدت)
+    slots = ExpertAvailability.objects.filter(
+        expert=request.user
+    ).order_by('date', 'start_time')
+
+    return render(request, 'expert_availability_manage.html', {
+        'slots': slots
+    })
+
+@login_required
+def delete_availability_slot(request, slot_id):
+    slot = get_object_or_404(ExpertAvailability, id=slot_id, expert=request.user)
+    if slot.is_booked:
+        messages.error(request, "You can't delete a booked slot.")
+    else:
+        slot.delete()
+        messages.success(request, "Slot deleted successfully.")
+    return redirect('expert_availability_manage')
+
+@login_required
+def edit_availability_slot(request, slot_id):
+    slot = get_object_or_404(ExpertAvailability, id=slot_id, expert=request.user)
+
+    if slot.is_booked:
+        messages.error(request, "You can't edit a booked slot.")
+        return redirect('expert_availability_manage')
+
+    if request.method == 'POST':
+        slot.date = request.POST.get('date')
+        slot.start_time = request.POST.get('start_time')
+        slot.end_time = request.POST.get('end_time') or None
+        slot.save()
+        messages.success(request, "Slot updated successfully.")
+        return redirect('expert_availability_manage')
+
+    return render(request, 'edit_availability_slot.html', {'slot': slot})
+
+@login_required
+def reject_meeting(request, meeting_id):
+    meeting = get_object_or_404(Meeting, id=meeting_id)
+    if request.user != meeting.expert:
+        messages.error(request, "You are not authorized to reject this meeting.")
+        return redirect('meeting_list')
+
+    meeting.status = 'rejected'
+    meeting.save()
+    messages.success(request, "Meeting rejected.")
+    return redirect('expert_availability_manage')

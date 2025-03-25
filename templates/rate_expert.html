@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rate Expert</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f9fafb;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .rate-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            font-size: 32px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .stars input {
+            display: none;
+        }
+
+        .stars label {
+            color: #d1d5db;
+            transition: color 0.2s ease;
+        }
+
+        .stars input:checked ~ label,
+        .stars label:hover,
+        .stars label:hover ~ label {
+            color: #fbbf24;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4338ca;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="rate-box">
+        <h2>Rate {{ expert.get_full_name|default:expert.username }}</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- ⭐ نجمات التقييم -->
+            <div class="stars">
+                <input type="radio" id="star5" name="rating" value="5" required>
+                <label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1">★</label>
+            </div>
+
+            <textarea name="comment" rows="4" placeholder="Write your feedback... (optional)"></textarea>
+
+            <button type="submit">Submit Rating</button>
+        </form>
+    </div>
+</body>
+</html>

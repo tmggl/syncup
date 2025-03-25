@@ -9,6 +9,10 @@ from django.http import JsonResponse
 from django.http import HttpResponseForbidden
 from .models import Message
 from django.db.models import Count
+from .models import ExpertRating  # تأكد أنك أضفت هذا السطر في أعلى الملف
+
+from django.db.models import Avg
+
 
 
 # ✅ عرض جميع المحادثات التي يشارك بها المستخدم
@@ -94,9 +98,15 @@ def public_chat(request):
 
 
 # ✅ صفحة الخبراء
+
+
 @login_required
 def expert_page(request):
-    experts = CustomUser.objects.filter(role='expert').exclude(id=request.user.id)
+    experts = CustomUser.objects.filter(role='expert').exclude(id=request.user.id).annotate(
+        avg_rating=Avg('ratings__rating'),
+        rating_count=Count('ratings'),
+        session_count=Count('chat_rooms', distinct=True)  # ✅ عدد المحادثات التي شارك فيها
+    )
     return render(request, 'expert_page.html', {'experts': experts})
 
 
@@ -194,3 +204,34 @@ def delete_message(request, message_id):
     message.save()
 
     return redirect('chat_detail', room_id=message.room.id)
+
+
+# ✅ عرض صفحة تقييم خبير
+@login_required
+def rate_expert(request, expert_id):
+    expert = get_object_or_404(CustomUser, id=expert_id, role='expert')
+
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment', '').strip()
+
+        ExpertRating.objects.update_or_create(
+            user=request.user,
+            expert=expert,
+            defaults={'rating': rating, 'comment': comment}
+        )
+        return redirect('expert_page')
+
+    return render(request, 'rate_expert.html', {'expert': expert})
+
+
+# ✅ عرض جميع تقييمات المستخدمين لخبير معين
+@login_required
+def expert_reviews(request, expert_id):
+    expert = get_object_or_404(CustomUser, id=expert_id, role='expert')
+    ratings = ExpertRating.objects.filter(expert=expert).order_by('-created_at')
+
+    return render(request, 'expert_reviews.html', {
+        'expert': expert,
+        'ratings': ratings,
+    })

@@ -1,74 +1,223 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>طلب اجتماع مع خبير</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            width: 100%;
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Book Expert Meeting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-dark: #6d28d9;
+      --bg: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --success: #10b981;
+      --danger: #ef4444;
+      --card-bg: #ffffff;
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      padding-top: 80px;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 2rem 1rem;
+    }
+
+    .expert-card {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .expert-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+    }
+
+    .expert-details {
+      flex: 1;
+    }
+
+    .expert-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .expert-meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .expert-meta span {
+      background-color: #eef2ff;
+      padding: 0.4rem 0.75rem;
+      border-radius: 9999px;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .slot-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .slot-info {
+      text-align: center;
+    }
+
+    .slot-time {
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .slot-date {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .badge-booked {
+      background-color: #fee2e2;
+      color: var(--danger);
+      padding: 0.4rem 0.75rem;
+      text-align: center;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .booking-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .booking-form input[type="text"] {
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+
+    .booking-form button {
+      padding: 0.6rem;
+      border: none;
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .booking-form button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .empty-state {
+      margin-top: 2rem;
+      background: var(--card-bg);
+      padding: 2rem;
+      text-align: center;
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius);
+    }
+
+    @media (max-width: 640px) {
+      .expert-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .expert-details {
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
+  {% include 'navbar.html' %}
 
-    <div class="container">
-        <h1>طلب اجتماع مع خبير</h1>
-        <form method="POST">
-            {% csrf_token %}
-            <label>اختر الخبير:</label>
-            <select name="expert">
-                {% for expert in experts %}
-                    <option value="{{ expert.id }}">{{ expert.username }}</option>
-                {% endfor %}
-            </select>
-            <label>التاريخ:</label>
-            <input type="date" name="date">
-            <label>الوقت:</label>
-            <input type="time" name="time">
-            <label>الموضوع:</label>
-            <input type="text" name="subject">
-            <button type="submit">إرسال الطلب</button>
-        </form>
+  <div class="container">
+    {% if selected_expert %}
+    <div class="expert-card">
+      <img src="{{ selected_expert.profile_image.url }}" alt="{{ selected_expert.username }}">
+      <div class="expert-details">
+        <div class="expert-name">{{ selected_expert.get_full_name|default:selected_expert.username }}</div>
+        <div class="expert-meta">
+          <span>⭐ {{ selected_expert.avg_rating|default:"4.9" }}</span>
+          <span>📅 {{ selected_expert.session_count }} sessions</span>
+        </div>
+      </div>
     </div>
+    {% endif %}
 
+    <h2>Select a Time Slot</h2>
+
+    {% if available_slots %}
+    <div class="slots-grid">
+      {% for slot in available_slots %}
+      <div class="slot-card">
+        <div class="slot-info">
+          <div class="slot-time">🕒 {{ slot.start_time }}</div>
+          <div class="slot-date">📅 {{ slot.date }}</div>
+        </div>
+
+        {% if slot.is_booked %}
+        <div class="badge-booked">Booked</div>
+        {% else %}
+        <form method="post" class="booking-form">
+          {% csrf_token %}
+          <input type="hidden" name="slot" value="{{ slot.id }}">
+          <input type="text" name="subject" placeholder="Meeting Subject" required>
+          <button type="submit">Confirm Booking</button>
+        </form>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <h3>No Available Slots</h3>
+      <p>Please check back later or contact support.</p>
+    </div>
+    {% endif %}
+  </div>
 </body>
 </html>

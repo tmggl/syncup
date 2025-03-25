@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reviews for {{ expert.get_full_name }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f3f4f6;
+            padding: 40px;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .review {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .review .name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .review .rating {
+            color: #fbbf24;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .review .comment {
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .review .time {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container">
+        <h2>Reviews for {{ expert.get_full_name|default:expert.username }}</h2>
+
+        {% for review in ratings %}
+            <div class="review">
+                <div class="name">{{ review.user.get_full_name|default:review.user.username }}</div>
+                <div class="rating">⭐ {{ review.rating }} / 5</div>
+                <div class="comment">{{ review.comment|linebreaksbr }}</div>
+                <div class="time">{{ review.created_at|date:"F j, Y - H:i" }}</div>
+            </div>
+        {% empty %}
+            <p style="text-align:center; color:#6b7280;">No reviews yet.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

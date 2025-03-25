@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import CustomUser
 from projects.models import Project
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class ChatRoom(models.Model):
     """
@@ -57,3 +58,30 @@ class Message(models.Model):
 
     def is_file(self):
         return self.attachment and not self.is_image() and not self.is_audio()
+
+
+class ExpertRating(models.Model):
+    expert = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='ratings',
+        limit_choices_to={'role': 'expert'}
+    )
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='given_ratings'
+    )
+    rating = models.DecimalField(
+        max_digits=2,
+        decimal_places=1,
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['expert', 'user']  # لا يمكن لمستخدم تقييم نفس الخبير أكثر من مرة
+
+    def __str__(self):
+        return f"{self.user} rated {self.expert} - {self.rating}"
