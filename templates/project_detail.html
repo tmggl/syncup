@@ -363,7 +363,7 @@
                     <p>📅 <strong>End:</strong> {{ project.end_date }}</p>
                     <p>🟢 <strong>Status:</strong> {{ project.get_status_display }}</p>
                     <button class="btn btn-info" onclick="openDescriptionModal(`{{ project.description|escapejs }}`)">
-                        📜 عرض الوصف
+                        📜 View description
                     </button>
                 </div>
             </div>
@@ -419,7 +419,7 @@
                         <td data-label="File">{{ file.file_name }}</td>
                         <td data-label="Description">
                             <button class="btn btn-info" onclick="openDescriptionModal(`{{ file.description|escapejs|default:'No description' }}`)">
-                                📜 عرض الوصف
+                                📜View description
                             </button>
                         </td>
                         <td data-label="Uploaded By">{{ file.uploaded_by.username }}</td>
@@ -466,7 +466,7 @@
                         <td data-label="File">{{ file.file_name }}</td>
                         <td data-label="Description">
                             <button class="btn btn-info" onclick="openDescriptionModal(`{{ file.description|escapejs|default:'No description' }}`)">
-                                📜 عرض الوصف
+                                📜View description
                             </button>
                         </td>
                         <td data-label="Uploaded By">{{ file.uploaded_by.username }}</td>
@@ -494,7 +494,7 @@
             </table>
         </div>
 
-        <!-- ✅ ✅ ✅ ✅ نافذة عرض الوصف ✅ ✅ ✅ ✅ -->
+        <!--  نافذة عرض الوصف -->
         <div class="modal" id="descriptionModal">
             <div class="modal-content">
                 <span class="close" onclick="closeDescriptionModal()">&times;</span>
