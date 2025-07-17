@@ -1,163 +1,211 @@
-<style>
-    /* الألوان المخصصة */
-    .navbar-custom {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 2rem;
-        background: #ffffff; /* لون خلفية الشريط */
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-        position: relative;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SyncUp Navbar</title>
+  <!-- ✅ استدعاء خط كايرو -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --secondary: #6366f1;
+      --accent: #10b981;
+      --error: #ef4444;
+      --gradient: linear-gradient(45deg, var(--primary), var(--secondary));
     }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .navbar-custom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #ffffff !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+.logo-custom {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: var(--gradient);
+  background-clip: text;               /* ✅ النسخة القياسية */
+  -webkit-background-clip: text;       /* ✅ دعم Chrome و Safari */
+  -webkit-text-fill-color: transparent;
+  color: transparent;                  /* احتياطي للمتصفحات الأخرى */
+  letter-spacing: -0.5px;
+}
 
     .nav-links-custom {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-        transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      transition: all 0.3s ease;
     }
 
-    /* لون نصوص الروابط فقط */
     .nav-links-custom a {
-        text-decoration: none;
-        color: #2d2d2d !important; /* لون نصوص الروابط */
-        font-weight: 600;
-        transition: color 0.3s ease;
-        white-space: nowrap;
+      text-decoration: none;
+      color: #1e1b4b !important;
+      font-weight: 600;
+      font-size: 1.05rem;
+      position: relative;
+      transition: all 0.3s ease;
     }
 
-    .nav-links-custom a:hover {
-        color: #6a1b9a !important;
+    .nav-links-custom a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links-custom a:hover::after {
+      width: 100%;
     }
 
     .buttons-container-custom {
-        display: flex;
-        gap: 1rem;
+      display: flex;
+      gap: 1.2rem;
     }
 
-    /* أزرار تسجيل الدخول والتسجيل بلون نص مستقل */
     .btn-custom {
-        background: linear-gradient(45deg, #5e47c2, #781378);
-        color: #ffffff !important; /* لون نص الأزرار مفصول عن الروابط */
-        padding: 0.7rem 1.5rem;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        border: none !important;
-        text-align: center;
-        display: inline-block;
+      background: var(--gradient);
+      color: white !important;
+      padding: 0.8rem 1.6rem;
+      border-radius: 12px;
+      font-weight: 700;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .btn-custom:hover {
-        background: #4b0082 !important;
-        transform: translateY(-2px);
-    }
-
-    /* إجبار لون نص الأزرار وفصله عن باقي النصوص */
-    .btn-custom span {
-        color: #ffffff !important; /* تأكيد أن النص داخل الزر أبيض */
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25);
     }
 
     .hamburger-custom {
-        display: none;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0.5rem;
-        z-index: 1000;
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
     }
 
     .hamburger-custom svg {
-        width: 28px;
-        height: 28px;
-        fill: #2d2d2d !important; /* لون أيقونة القائمة */
-    }
-
-    .logo-custom {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #6a1b9a !important;
-        margin-right: 2rem;
+      width: 30px;
+      height: 30px;
+      fill: var(--primary);
+      transition: transform 0.3s ease;
     }
 
     @media (max-width: 768px) {
-        .navbar-custom {
-            padding: 1rem;
-        }
+      .navbar-custom {
+        padding: 0.8rem 1.2rem;
+      }
 
-        .hamburger-custom {
-            display: block;
-        }
+      .hamburger-custom {
+        display: block;
+        z-index: 1100;
+      }
 
-        .nav-links-custom {
-            display: none;
-            position: fixed;
-            top: 70px;
-            left: 0;
-            right: 0;
-            background: #ffffff !important;
-            flex-direction: column;
-            padding: 2rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            gap: 1.5rem;
-            animation: slideDown 0.3s ease;
-        }
+      .nav-links-custom {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem;
+        gap: 1rem;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
 
-        .nav-links-custom.active {
-            display: flex;
-        }
+      .nav-links-custom.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
 
-        .buttons-container-custom {
-            flex-direction: column;
-            width: 100%;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
+      .buttons-container-custom {
+        flex-direction: column;
+        width: 100%;
+      }
 
-        .btn-custom {
-            width: 100%;
-            text-align: center;
-            padding: 1rem;
-        }
+      .btn-custom {
+        width: 100%;
+        justify-content: center;
+      }
     }
+  </style>
+</head>
+<body>
 
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
+  <nav class="navbar-custom">
+    <a href="{% url 'home' %}" class="logo-custom">SyncUp</a>
 
-<nav class="navbar-custom">
-    <a href="#" class="logo-custom">SyncUp</a>
-
-    <button class="hamburger-custom" onclick="toggleMenu()">
-        <svg viewBox="0 0 24 24">
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-        </svg>
+    <button class="hamburger-custom" onclick="toggleMenu()" aria-label="قائمة التنقل">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+      </svg>
     </button>
 
     <div class="nav-links-custom">
-        <a href="#">Home</a>
-        <a href="#">Features</a>
-        <a href="#">About</a>
-        <a href="#">Help</a>
-        <div class="buttons-container-custom">
-            <a href="{% url 'login' %}" class="btn-custom"><span>Login</span></a>
-            <a href="{% url 'register' %}" class="btn-custom"><span>Sign Up</span></a>
-        </div>
+      <a href="{% url 'home' %}">الرئيسية</a>
+      <a href="#">المميزات</a>
+      <a href="#">عنّا</a>
+      <a href="#">الدعم</a>
+      <div class="buttons-container-custom">
+        <a href="{% url 'login' %}" class="btn-custom">تسجيل الدخول</a>
+        <a href="{% url 'register' %}" class="btn-custom">إنشاء حساب</a>
+      </div>
     </div>
-</nav>
+  </nav>
 
-<script>
+  <script>
     function toggleMenu() {
-        const navLinks = document.querySelector('.nav-links-custom');
-        navLinks.classList.toggle('active');
+      const nav = document.querySelector('.nav-links-custom');
+      nav.classList.toggle('active');
     }
-</script>
+
+    document.addEventListener('click', function (e) {
+      const nav = document.querySelector('.nav-links-custom');
+      const button = document.querySelector('.hamburger-custom');
+
+      if (!e.target.closest('.navbar-custom') && nav.classList.contains('active')) {
+        nav.classList.remove('active');
+        button.style.transform = 'rotate(0deg)';
+      }
+    });
+  </script>
+
+</body>
+</html>

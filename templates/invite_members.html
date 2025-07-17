@@ -6,8 +6,8 @@
     <title>🌟 Collaborate - Invite Members</title>
     <style>
         :root {
-            --primary: #7C3AED;
-            --primary-light: #8B5CF6;
+            --primary: #4f46e5;
+            --primary-light: #4f46e5;
             --surface: #FFFFFF;
             --background: #F5F3FF;
             --text-primary: #1F2937;
@@ -25,17 +25,19 @@
             align-items: start;
         }
 
-        .card {
-            background: var(--surface);
-            width: 100%;
-            max-width: 680px;
-            margin: 2rem 0;
-            padding: 2.5rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(124, 58, 237, 0.1);
-        }
-
+.card {
+    background: var(--surface);
+    width: 100%;
+    max-width: 680px;
+    margin: 2rem 0;
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(124, 58, 237, 0.1);
+    overflow: visible; /* ✅ يسمح بعرض القائمة خارج الحاوية */
+    position: relative; /* ✅ ضروري مع overflow */
+    z-index: 1;
+}
         .header {
             text-align: center;
             margin-bottom: 2.5rem;
@@ -63,21 +65,78 @@
             font-size: 1rem;
         }
 
-        .search-container {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
+.search-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+    width: 100%; /* ✅ تأكد أنه لا يخرج */
+    box-sizing: border-box;
+}
 
-        .search-input {
-            width: 100%;
-            padding: 1rem 1.5rem;
-            padding-left: 3rem;
-            border: 1px solid #E5E7EB;
-            border-radius: 12px;
-            font-size: 1rem;
-            background: var(--surface);
-            transition: all 0.3s ease;
-        }
+.search-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    padding-left: 3rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: var(--surface);
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* ✅ يمنع الخروج */
+}
+
+
+.success-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--surface); /* أبيض */
+    color: var(--primary); /* نص أزرق */
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+    z-index: 9999;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+    border: 1px solid rgba(124, 58, 237, 0.1); /* لمسة هوية */
+}
+
+.success-card p {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.success-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(124, 58, 237, 0.15);
+}
+
+.success-btn:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
 
         .search-input:focus {
             outline: none;
@@ -251,84 +310,82 @@
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="header">
-            <h1>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="8.5" cy="7" r="4"></circle>
-                    <line x1="20" y1="8" x2="20" y2="14"></line>
-                    <line x1="23" y1="11" x2="17" y2="11"></line>
-                </svg>
-                Invite Collaborators
-            </h1>
-        </div>
-
-        <!-- رسالة النجاح الجديدة مع التوجيه إلى قسم "Sent" -->
-        <div id="successMessage" style="display: none; background: #e6f7e6; color: #155724; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1rem;">
-            ✅ Invitations sent successfully! <br>
-            You can track your sent requests by clicking 
-            <a href="{% url 'received_invitations' %}" style="color: #007bff; text-decoration: none; font-weight: bold;">
-                here
-            </a> 
-            and navigating to the <strong>Sent</strong> section.
-        </div>
-
-        <form method="post" id="mainForm">
-            {% csrf_token %}
-            <select class="project-select" name="project_id" required>
-                <option value="">Select project...</option>
-                {% for project in user_projects %}
-                    <option value="{{ project.id }}">{{ project.name }}</option>
-                {% endfor %}
-            </select>
-
-            <div class="search-container">
-                <input type="text" 
-                       id="searchInput"
-                       class="search-input" 
-                       placeholder="Search by name, email, or role..."
-                       autocomplete="off">
-                <svg class="search-icon" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-            </div>
-
-            <div class="user-grid" id="userGrid">
-                {% for user in available_users %}
-                    <label class="user-card">
-                        <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
-                        <div class="user-info">
-                            <div class="user-name">{{ user.username }}</div>
-                            <div class="user-email">{{ user.email }}</div>
-                        </div>
-                        <div class="checkbox-container">
-                            <input type="checkbox" 
-                                   class="checkbox-input"
-                                   name="selected_users"
-                                   value="{{ user.id }}"
-                                   data-user-name="{{ user.username }}">
-                            <span class="checkmark"></span>
-                        </div>
-                    </label>
-                {% empty %}
-                    <div class="empty-state">🕵️ No collaborators found</div>
-                {% endfor %}
-            </div>
-
-            <div class="selected-users-panel">
-                <h3>Selected Users</h3>
-                <div id="selectedUsersList"></div>
-            </div>
-
-            <input type="hidden" id="selectedUsersInput" name="selected_users">
-
-            <button type="submit" class="submit-btn">
-                Send Invitations
-            </button>
-        </form>
+<div class="card">
+    <div class="header">
+        <h1>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+            </svg>
+            دعوة المتعاونين
+        </h1>
     </div>
+
+    <!-- ✅ رسالة النجاح -->
+<div id="successMessage" class="success-card" style="display: none;">
+    <p>✅ تم إرسال الدعوات بنجاح!</p>
+    <p>يمكنك متابعة الدعوات المرسلة من خلال الزر التالي:</p>
+    <a href="{% url 'received_invitations' %}" class="success-btn">عرض الدعوات المرسلة</a>
+</div>
+
+    <form method="post" id="mainForm">
+        {% csrf_token %}
+        
+        <select class="project-select" name="project_id" required>
+            <option value="">اختر المشروع...</option>
+            {% for project in user_projects %}
+                <option value="{{ project.id }}">{{ project.name }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="search-container">
+            <input type="text" 
+                   id="searchInput"
+                   class="search-input" 
+                   placeholder="ابحث بالاسم أو البريد أو الدور..."
+                   autocomplete="off">
+            <svg class="search-icon" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+        </div>
+
+        <div class="user-grid" id="userGrid">
+            {% for user in available_users %}
+                <label class="user-card">
+                    <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
+                    <div class="user-info">
+                        <div class="user-name">{{ user.username }}</div>
+                        <div class="user-email">{{ user.email }}</div>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" 
+                               class="checkbox-input"
+                               name="selected_users"
+                               value="{{ user.id }}"
+                               data-user-name="{{ user.username }}">
+                        <span class="checkmark"></span>
+                    </div>
+                </label>
+            {% empty %}
+                <div class="empty-state">🕵️ لم يتم العثور على مستخدمين</div>
+            {% endfor %}
+        </div>
+
+        <div class="selected-users-panel">
+            <h3>المستخدمون المحددون</h3>
+            <div id="selectedUsersList"></div>
+        </div>
+
+        <input type="hidden" id="selectedUsersInput" name="selected_users">
+
+        <button type="submit" class="submit-btn">
+            إرسال الدعوات
+        </button>
+    </form>
+</div>
 
     <script>
         

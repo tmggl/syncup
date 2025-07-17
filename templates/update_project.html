@@ -1,80 +1,199 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if project %}تعديل المشروع{% else %}إضافة مشروع جديد{% endif %}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% if project %}تعديل المشروع{% else %}إضافة مشروع جديد{% endif %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #4b0082;
+      --primary-dark: #3b0070;
+      --background: #f5f7fa;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --border: #e0e0e0;
+      --radius: 12px;
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    }
 
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        h1 {
-            color: #4b0082;
-            font-size: 22px;
-        }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--background);
+      margin: 0;
+      padding: 6rem 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      color: var(--text);
+    }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .container {
+      background: var(--surface);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 700px;
+    }
 
-        input, textarea, select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 2rem;
+    }
 
-        button {
-            width: 100%;
-            background: #4b0082;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s ease;
-        }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
 
-        button:hover {
-            background: #6600cc;
-        }
-    </style>
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .form-group-full {
+        grid-column: span 2;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--primary-dark);
+    }
+
+    input, select, textarea {
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #fff;
+      transition: border 0.3s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 5px rgba(75, 0, 130, 0.2);
+    }
+
+    .form-group.inline-flex {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-preview {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .errorlist {
+      color: #d33;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 1rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: var(--primary-dark);
+    }
+  </style>
 </head>
 <body>
+  {% include 'navbar.html' %}
 
-    <div class="container">
-        <h1>{% if project %}تعديل المشروع{% else %}إضافة مشروع جديد{% endif %}</h1>
+  <div class="container">
+    <h1>{% if project %}تعديل المشروع{% else %}إضافة مشروع جديد{% endif %}</h1>
 
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
 
-            <button type="submit">{% if project %}تحديث{% else %}إنشاء{% endif %}</button>
-        </form>
-    </div>
+      <div class="form-grid">
 
+        <!-- ✅ حقل الاسم + الشعار بشكل أفقي -->
+        <div class="form-group inline-flex form-group-full">
+          <div style="flex: 1;">
+            <label for="{{ form.name.id_for_label }}">اسم المشروع</label>
+            {{ form.name }}
+            {{ form.name.errors }}
+          </div>
+
+          {% if project and project.logo %}
+          <div>
+            <img src="{{ project.logo.url }}" alt="شعار المشروع" class="logo-preview" />
+          </div>
+          {% endif %}
+        </div>
+
+        {% for field in form.visible_fields %}
+          {% if field.name != 'name' and field.name != 'logo' %}
+            <div class="form-group {% if field.name == 'description' %}form-group-full{% endif %}">
+              <label for="{{ field.id_for_label }}">
+                {% if field.name == 'description' %}وصف المشروع
+                {% elif field.name == 'start_date' %}تاريخ البدء
+                {% elif field.name == 'end_date' %}تاريخ الانتهاء
+                {% elif field.name == 'category' %}نوع المشروع
+                {% elif field.name == 'members' %}أعضاء الفريق
+                {% elif field.name == 'attachments' %}مرفقات المشروع
+                {% elif field.name == 'project_color' %}لون المشروع
+                {% else %}{{ field.label }}
+                {% endif %}
+              </label>
+              {{ field }}
+              {{ field.errors }}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        <!-- ✅ حقل رفع الشعار منفصل -->
+        <div class="form-group">
+          <label for="{{ form.logo.id_for_label }}">تغيير الشعار</label>
+          {{ form.logo }}
+          {{ form.logo.errors }}
+        </div>
+
+      </div>
+
+      <button type="submit">{% if project %}تحديث المشروع{% else %}إنشاء المشروع{% endif %}</button>
+    </form>
+  </div>
 </body>
 </html>

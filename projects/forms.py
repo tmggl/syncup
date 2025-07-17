@@ -9,7 +9,7 @@ class ProjectForm(forms.ModelForm):
         required=True
     )
     members = forms.ModelMultipleChoiceField(
-        queryset=CustomUser.objects.all(), 
+        queryset=CustomUser.objects.none(),  # نضبطه لاحقًا في __init__
         widget=forms.CheckboxSelectMultiple,
         required=False,
         help_text="Select team members"
@@ -28,9 +28,19 @@ class ProjectForm(forms.ModelForm):
         help_text="Select a color for the project"
     )
 
+    def __init__(self, *args, **kwargs):
+        project_instance = kwargs.get('instance', None)
+        super().__init__(*args, **kwargs)
+
+        if project_instance:
+            self.fields['members'].queryset = project_instance.members.all()
+        else:
+            self.fields['members'].queryset = CustomUser.objects.none()
+
     class Meta:
         model = Project
         fields = ['name', 'description', 'start_date', 'end_date', 'category', 'members', 'logo', 'attachments', 'project_color']
+
 
 class ProjectAttachmentForm(forms.ModelForm):
     file = forms.FileField(

@@ -128,7 +128,7 @@
         }
 
         th {
-            background: linear-gradient(45deg, #5e47c2, #781378);
+            background: linear-gradient(135deg, #4f46e5, #9697f3);
             color: white;
             font-weight: 600;
         }
@@ -283,147 +283,202 @@
         .btn-group {
            margin-top: 1.5rem;
         }
+        .btn-invite {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-        @media (max-width: 768px) {
-            .container {
-                margin: 70px 1rem 1rem;
-                padding: 1rem;
-            }
+.btn-invite:hover {
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+}
 
-            .project-meta {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
 
-            .btn-group {
-                justify-content: center;
-            }
+@media (max-width: 768px) {
+  .container {
+    margin-top: 80px;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
 
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
+  .top-section,
+  .file-section {
+    padding: 1rem 0;
+  }
 
-            thead {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
+  .project-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
 
-            tr {
-                margin-bottom: 1rem;
-                border-radius: 0.5rem;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            }
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
 
-            td {
-                border: none;
-                position: relative;
-                padding-left: 50%;
-            }
+  .btn-group .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
 
-            td:before {
-                content: attr(data-label);
-                position: absolute;
-                left: 1rem;
-                width: calc(50% - 1rem);
-                white-space: nowrap;
-                font-weight: 600;
-                color: var(--primary);
-            }
+  /* ✅ تحسين عرض الجدول ليصبح كبطاقات */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
 
-            .btn-group {
-                flex-direction: column;
-                align-items: stretch;
-            }
+  thead {
+    display: none;
+  }
 
-            .btn-group .btn {
-               flex: 1 1 calc(33.333% - 0.75rem); /* 3 أزرار في كل صف بشكل متناسق */
-               min-width: 180px;
-               text-align: center;
-               justify-content: center;
-            }
-        }
-        
+  tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f1f5f9;
+    position: relative;
+  }
+
+  tbody td:last-child {
+    border-bottom: none;
+  }
+
+  tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #4a5568;
+    flex-basis: 45%;
+    text-align: left;
+  }
+
+  /* ✅ تحسين بطاقات الأعضاء */
+  .members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .member-card {
+    text-align: center;
+  }
+
+  .member-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+  }
+}
         
     </style>
 </head>
         
 <body>
-    {% include 'navbar.html' %}
+{% include 'navbar.html' %}
 
-    <div class="container">
-        
-        <!-- ✅ تحسين القسم العلوي -->
-        <div class="top-section">
-            <div class="project-card">
-                <h1>{{ project.name }}</h1>
-                <div class="project-meta">
-                    <p>📅 <strong>Start:</strong> {{ project.start_date }}</p>
-                    <p>📅 <strong>End:</strong> {{ project.end_date }}</p>
-                    <p>🟢 <strong>Status:</strong> {{ project.get_status_display }}</p>
-                    <button class="btn btn-info" onclick="openDescriptionModal(`{{ project.description|escapejs }}`)">
-                        📜 View description
-                    </button>
+<div class="container">
+
+    <!-- ✅ القسم العلوي -->
+    <div class="top-section">
+        <div class="project-card">
+            <h1>{{ project.name }}</h1>
+            <div class="project-meta">
+                <p>📅 <strong>البداية:</strong> {{ project.start_date }}</p>
+                <p>📅 <strong>النهاية:</strong> {{ project.end_date }}</p>
+                <p>🟢 <strong>الحالة:</strong> {{ project.get_status_display }}</p>
+                <button class="btn btn-info" onclick="openDescriptionModal(`{{ project.description|escapejs }}`)">
+                    📜 عرض الوصف
+                </button>
+            </div>
+        </div>
+
+        <div class="members-card">
+            <h2>👥 أعضاء الفريق</h2>
+            <div class="members-grid">
+                {% for member in members %}
+                <div class="member-card">
+                    <img src="{{ member.profile_image.url }}" alt="Avatar" class="member-avatar">
+                    <span class="member-name">{{ member.username }}</span>
                 </div>
+                {% empty %}
+                <p>لا يوجد أعضاء بعد</p>
+                {% endfor %}
             </div>
 
-            <div class="members-card">
-                <h2>👥 Team Members</h2>
-                <div class="members-grid">
-                    {% for member in members %}
-                    <div class="member-card">
-                        <img src="{{ member.profile_image.url }}" alt="Avatar" class="member-avatar">
-                        <span class="member-name">{{ member.username }}</span>
-                    </div>
-                    {% empty %}
-                    <p>No members yet</p>
-                    {% endfor %}
-                </div>
-            
-                {% if is_owner %}
-                <div class="invite-section">
-                    <a href="/projects/invite-members/" class="btn" style="background: #d1d5db; color: black;">
-                        <i class="fa-solid fa-user-plus"></i> Invite Members
-                    </a>
-                                    </div>
-                {% endif %}
-            </div>            
-            <div class="btn-group">
-                {% if is_owner %}
-                    <a href="{% url 'update_project' project.id %}" class="btn" style="background: #afb6c2; color: white;">✏️ Edit</a>
-                    <button class="btn" style="background: #ef4444; color: white;" onclick="openDeleteModal()">🗑️ Delete</button>
-                    <a href="{% url 'create_task' project.id %}" class="btn" style="background: #10b981; color: white;">📝 Create New Task</a>
-                    <a href="{% url 'sent_tasks' %}" class="btn" style="background: #afb6c2; color: white;">📋 View Sent Tasks</a>
-                    <a href="{% url 'tasks_list_by_project' project.id %}" class="btn" style="background: #afb6c2; color: white;">📌 View All Tasks</a>
-                    <a href="{% url 'create_meeting' %}" class="btn" style="background: #afb6c2; color: white;">📅 Create Meeting</a>
-                {% endif %}
-                
-                <!--  يظهر للجميع -->
-                <a href="{% url 'project_chat' project.id %}" class="btn" style="background: #afb6c2; color: white;">💬 Project Chat</a>
+            {% if is_owner %}
+            <div class="invite-section">
+<a href="/projects/invite-members/" class="btn btn-invite">
+  <i class="fa-solid fa-user-plus"></i> دعوة أعضاء
+</a>                
             </div>
-                    <div class="file-section">
-            <h2>📂 Main Files</h2>
+            {% endif %}
+        </div>
+
+        <div class="btn-group">
+            {% if is_owner %}
+                <a href="{% url 'update_project' project.id %}" class="btn" style="background: #afb6c2; color: white;">✏️ تعديل</a>
+                <button class="btn" style="background: #ef4444; color: white;" onclick="openDeleteModal()">🗑️ حذف</button>
+                <a href="{% url 'create_task' project.id %}" class="btn" style="background: #10b981; color: white;">📝 إضافة مهمة</a>
+                <a href="{% url 'sent_tasks' %}" class="btn" style="background: #afb6c2; color: white;">📋 المهام المرسلة</a>
+                <a href="{% url 'tasks_list_by_project' project.id %}" class="btn" style="background: #afb6c2; color: white;">📌 كل المهام</a>
+                <a href="{% url 'create_meeting' %}" class="btn" style="background: #afb6c2; color: white;">📅 إضافة اجتماع</a>
+            {% endif %}
+            <a href="{% url 'project_chat' project.id %}" class="btn" style="background: #afb6c2; color: white;">💬 محادثة المشروع</a>
+        </div>
+
+        <div class="file-section">
+            <h2>📂 الملفات الأساسية</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>File</th>
-                        <th>Description</th>
-                        <th>Uploaded By</th>
-                        <th>Actions</th>
+                        <th>الملف</th>
+                        <th>الوصف</th>
+                        <th>مرفوع بواسطة</th>
+                        <th>إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for file in main_files %}
                     <tr>
-                        <td data-label="File">{{ file.file_name }}</td>
-                        <td data-label="Description">
-                            <button class="btn btn-info" onclick="openDescriptionModal(`{{ file.description|escapejs|default:'No description' }}`)">
-                                📜View description
+                        <td data-label="الملف">{{ file.file_name }}</td>
+                        <td data-label="الوصف">
+                            <button class="btn btn-info" onclick="openDescriptionModal(`{{ file.description|escapejs|default:'لا يوجد وصف' }}`)">
+                                📜عرض الوصف
                             </button>
                         </td>
-                        <td data-label="Uploaded By">{{ file.uploaded_by.username }}</td>
-                        <td data-label="Actions">
+                        <td data-label="مرفوع بواسطة">{{ file.uploaded_by.username }}</td>
+                        <td data-label="إجراءات">
                             <div class="btn-group">
                                 <a href="{{ file.file.url }}" class="btn-icon btn-download-icon" download>
                                     <i class="fa-solid fa-file-arrow-down"></i>
@@ -435,11 +490,11 @@
                                     </button>
                                 </form>
                             </div>
-                        </td>                                          
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center">No files available</td>
+                        <td colspan="4" class="text-center">لا توجد ملفات</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -447,31 +502,31 @@
         </div>
 
         <div class="file-section">
-            <h2>🔄 Work Updates</h2>
-            <button class="btn btn-upload" onclick="openUploadModal()">➕ Add Update</button>
-            
+            <h2>🔄 تحديثات العمل</h2>
+            <button class="btn btn-upload" onclick="openUploadModal()">➕ إضافة تحديث</button>
+
             <table>
                 <thead>
                     <tr>
-                        <th>File</th>
-                        <th>Description</th>
-                        <th>Uploaded By</th>
-                        <th>Date</th>
-                        <th>Actions</th>
+                        <th>الملف</th>
+                        <th>الوصف</th>
+                        <th>مرفوع بواسطة</th>
+                        <th>التاريخ</th>
+                        <th>إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for file in update_files %}
                     <tr>
-                        <td data-label="File">{{ file.file_name }}</td>
-                        <td data-label="Description">
-                            <button class="btn btn-info" onclick="openDescriptionModal(`{{ file.description|escapejs|default:'No description' }}`)">
-                                📜View description
+                        <td data-label="الملف">{{ file.file_name }}</td>
+                        <td data-label="الوصف">
+                            <button class="btn btn-info" onclick="openDescriptionModal(`{{ file.description|escapejs|default:'لا يوجد وصف' }}`)">
+                                📜عرض الوصف
                             </button>
                         </td>
-                        <td data-label="Uploaded By">{{ file.uploaded_by.username }}</td>
-                        <td data-label="Date">{{ file.uploaded_at }}</td>
-                        <td data-label="Actions">
+                        <td data-label="مرفوع بواسطة">{{ file.uploaded_by.username }}</td>
+                        <td data-label="التاريخ">{{ file.uploaded_at }}</td>
+                        <td data-label="إجراءات">
                             <div class="btn-group">
                                 <a href="{{ file.file.url }}" class="btn-icon btn-download-icon" download>
                                     <i class="fa-solid fa-file-arrow-down"></i>
@@ -483,76 +538,73 @@
                                     </button>
                                 </form>
                             </div>
-                        </td>                                                                     
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center">No updates yet</td>
+                        <td colspan="5" class="text-center">لا توجد تحديثات حتى الآن</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
 
-        <!--  نافذة عرض الوصف -->
+        <!-- ✅ نافذة عرض الوصف -->
         <div class="modal" id="descriptionModal">
             <div class="modal-content">
                 <span class="close" onclick="closeDescriptionModal()">&times;</span>
-                <h3>📜 File Description</h3>
+                <h3>📜 وصف الملف</h3>
                 <p id="modalDescription"></p>
             </div>
         </div>
 
-        <!-- ✅ نافذة رفع الملفات ✅ -->
-<!-- ✅ ✅ ✅ ✅ نافذة رفع الملفات بتصميم عصري ✅ ✅ ✅ ✅ -->
-<div class="modal" id="uploadModal">
-    <div class="modal-content modern-upload">
-        <span class="close" onclick="closeUploadModal()">&times;</span>
-        <h3>📤 Upload File</h3>
-        <form method="POST" action="{% url 'project_detail' project.id %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            
-            <!-- ✅ تحسين تصميم الحقول -->
-            <div class="form-container">
-                <div class="input-group">
-                    <label for="file_name"><i class="fa-solid fa-file-lines"></i> File Name</label>
-                    <input type="text" name="file_name" id="file_name" class="styled-input" required placeholder="Enter file name...">
-                </div>
-                <div class="input-group">
-                    <label for="description"><i class="fa-solid fa-file-alt"></i> Description</label>
-                    <textarea name="description" id="description" class="styled-textarea" placeholder="Add a short description..."></textarea>
+        <!-- ✅ نافذة رفع الملفات -->
+        <div class="modal" id="uploadModal">
+            <div class="modal-content modern-upload">
+                <span class="close" onclick="closeUploadModal()">&times;</span>
+                <h3>📤 رفع ملف</h3>
+                <form method="POST" action="{% url 'project_detail' project.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-container">
+                        <div class="input-group">
+                            <label for="file_name"><i class="fa-solid fa-file-lines"></i> اسم الملف</label>
+                            <input type="text" name="file_name" id="file_name" class="styled-input" required placeholder="أدخل اسم الملف...">
+                        </div>
+                        <div class="input-group">
+                            <label for="description"><i class="fa-solid fa-file-alt"></i> الوصف</label>
+                            <textarea name="description" id="description" class="styled-textarea" placeholder="أدخل وصفًا مختصرًا..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="file-upload-modern">
+                        <label for="new_file" class="file-upload-label">
+                            <i class="fa-solid fa-upload"></i> اسحب الملف أو اضغط للرفع
+                            <input type="file" name="new_file" id="new_file" required class="file-input">
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-upload mt-3">رفع</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ✅ نافذة تأكيد الحذف -->
+        <div class="modal" id="deleteModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDeleteModal()">&times;</span>
+                <h3 style="color: var(--danger); margin-bottom: 1rem;">⚠️ تأكيد الحذف</h3>
+                <p>هل أنت متأكد أنك تريد حذف هذا المشروع؟</p>
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button class="btn" style="background: #d1d5db; color: black;" onclick="closeDeleteModal()">إلغاء</button>
+                    <form method="post" action="{% url 'delete_project' project.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn" style="background: #ef4444; color: white;">نعم، احذف</button>
+                    </form>
                 </div>
             </div>
-        
-            <!-- ✅ خانة الإرفاق الحديثة -->
-            <div class="file-upload-modern">
-                <label for="new_file" class="file-upload-label">
-                    <i class="fa-solid fa-upload"></i> Drag & Drop or Click to Upload
-                    <input type="file" name="new_file" id="new_file" required class="file-input">
-                </label>
-            </div>
-        
-            <button type="submit" class="btn btn-upload mt-3">Upload</button>
-        </form>   
-    </div>
-</div>
-<div class="modal" id="deleteModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeDeleteModal()">&times;</span>
-        <h3 style="color: var(--danger); margin-bottom: 1rem;">⚠️ Confirm Deletion</h3>
-        <p>Are you sure you want to delete this project?</p>
-        <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
-            <button class="btn" style="background: #d1d5db; color: black;" onclick="closeDeleteModal()">Cancel</button>
-            <form method="post" action="{% url 'delete_project' project.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn" style="background: #ef4444; color: white;">Yes, Delete</button>
-            </form>
         </div>
     </div>
 </div>
-
-
-    </div>
 
     <script>
         function openUploadModal() {

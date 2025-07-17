@@ -306,102 +306,100 @@
 </head>
 <body>
   {% include 'navbar.html' %}
+<div class="glass-container">
+  <div class="header">
+    <h1>الاجتماعات القادمة</h1>
+    <a href="{% url 'create_meeting' %}" class="new-meeting-btn">
+      <i class="fas fa-plus"></i> إنشاء اجتماع
+    </a>
+  </div>
 
-  <div class="glass-container">
-    <div class="header">
-      <h1>Upcoming Meetings</h1>
-      <a href="{% url 'create_meeting' %}" class="new-meeting-btn">
-        <i class="fas fa-plus"></i> Create Meeting
-      </a>
-    </div>
+  <div class="meeting-list">
+    {% for meeting in meetings %}
+      <div class="meeting-item">
+        <div class="meeting-info">
+          <h2><a href="{% url 'meeting_detail' meeting.id %}">{{ meeting.title }}</a></h2>
 
-    <div class="meeting-list">
-      {% for meeting in meetings %}
-        <div class="meeting-item">
-          <div class="meeting-info">
-            <h2><a href="{% url 'meeting_detail' meeting.id %}">{{ meeting.title }}</a></h2>
-
-            <div class="meeting-meta">
-              <div class="meta-item">
-                <i class="fas fa-calendar-alt"></i>
-                {{ meeting.date|date:"M d, Y" }} - {{ meeting.time }}
-                {% if meeting.date < today %}
-                  <span style="color: #ef4444; font-weight: bold;">📅 Ended</span>
-                {% endif %}
-              </div>
-
-              {% if meeting.project %}
-              <div class="meta-item">
-                <i class="fas fa-folder-open"></i>
-                {{ meeting.project.name }}
-              </div>
+          <div class="meeting-meta">
+            <div class="meta-item">
+              <i class="fas fa-calendar-alt"></i>
+              {{ meeting.date|date:"Y/m/d" }} - {{ meeting.time }}
+              {% if meeting.date < today %}
+                <span style="color: #ef4444; font-weight: bold;">📅 منتهٍ</span>
               {% endif %}
-
-              {% if meeting.created_by %}
-              <div class="meta-item">
-                <i class="fas fa-user"></i>
-                {{ meeting.created_by.get_full_name|default:meeting.created_by.username }}
-              </div>
-              {% else %}
-              <div class="meta-item">
-                <i class="fas fa-user-slash"></i>
-                Unknown
-              </div>
-              {% endif %}
-
-              <div class="meta-item">
-                <i class="fas fa-info-circle"></i>
-                {% if meeting.status == 'pending' %}
-                  <span style="color: #f59e0b; font-weight: 600;">⏳ Awaiting Approval</span>
-                {% elif meeting.status == 'approved' %}
-                  <span style="color: #10b981; font-weight: 600;">✅ Approved</span>
-                {% elif meeting.status == 'rejected' %}
-                  <span style="color: #ef4444; font-weight: 600;">❌ Rejected</span>
-                {% elif meeting.status == 'cancelled' %}
-                  <span style="color: #6b7280; font-weight: 600;">🚫 Cancelled</span>
-                {% endif %}
-              </div>
-
-              <div class="meeting-type">
-                {% if meeting.expert %}
-                <i class="fas fa-user-tie"></i> Expert Session
-                {% else %}
-                <i class="fas fa-users"></i> Team Meeting
-                {% endif %}
-              </div>
             </div>
 
-            <div class="action-buttons">
-              {% if user == meeting.expert and meeting.status == 'pending' %}
-                <a href="{% url 'approve_expert_meeting' meeting.id %}" class="join-button" style="background-color:#6366f1;">
-                  <i class="fas fa-check-circle"></i> Approve & Add Link
-                </a>
-              {% endif %}
+            {% if meeting.project %}
+            <div class="meta-item">
+              <i class="fas fa-folder-open"></i>
+              {{ meeting.project.name }}
+            </div>
+            {% endif %}
 
-              {% if meeting.description %}
-                <button class="show-description-btn" onclick="showDescription(`{{ meeting.description|escapejs }}`)">
-                  <i class="fas fa-file-alt"></i> Details
-                </button>
-              {% endif %}
+            {% if meeting.created_by %}
+            <div class="meta-item">
+              <i class="fas fa-user"></i>
+              {{ meeting.created_by.get_full_name|default:meeting.created_by.username }}
+            </div>
+            {% else %}
+            <div class="meta-item">
+              <i class="fas fa-user-slash"></i>
+              غير معروف
+            </div>
+            {% endif %}
 
-              {% if meeting.status == 'approved' and meeting.meeting_link %}
-                <button class="join-button" onclick="joinMeeting('{{ meeting.meeting_link }}')">
-                  <i class="fas fa-video"></i> Join
-                </button>
+            <div class="meta-item">
+              <i class="fas fa-info-circle"></i>
+              {% if meeting.status == 'pending' %}
+                <span style="color: #f59e0b; font-weight: 600;">⏳ بانتظار الموافقة</span>
+              {% elif meeting.status == 'approved' %}
+                <span style="color: #10b981; font-weight: 600;">✅ تمت الموافقة</span>
+              {% elif meeting.status == 'rejected' %}
+                <span style="color: #ef4444; font-weight: 600;">❌ مرفوض</span>
+              {% elif meeting.status == 'cancelled' %}
+                <span style="color: #6b7280; font-weight: 600;">🚫 ملغى</span>
+              {% endif %}
+            </div>
+
+            <div class="meeting-type">
+              {% if meeting.expert %}
+              <i class="fas fa-user-tie"></i> جلسة مع خبير
+              {% else %}
+              <i class="fas fa-users"></i> اجتماع فريق
               {% endif %}
             </div>
           </div>
-        </div>
-      {% empty %}
-        <div class="empty-state">
-          <i class="fas fa-calendar-times fa-2x"></i>
-          <h3>No Meetings Scheduled</h3>
-          <p>Get started by scheduling a new meeting</p>
-        </div>
-      {% endfor %}
-    </div>
-  </div>
 
+          <div class="action-buttons">
+            {% if user == meeting.expert and meeting.status == 'pending' %}
+              <a href="{% url 'approve_expert_meeting' meeting.id %}" class="join-button" style="background-color:#6366f1;">
+                <i class="fas fa-check-circle"></i> الموافقة وإضافة الرابط
+              </a>
+            {% endif %}
+
+            {% if meeting.description %}
+              <button class="show-description-btn" onclick="showDescription(`{{ meeting.description|escapejs }}`)">
+                <i class="fas fa-file-alt"></i> التفاصيل
+              </button>
+            {% endif %}
+
+            {% if meeting.status == 'approved' and meeting.meeting_link %}
+              <button class="join-button" onclick="joinMeeting('{{ meeting.meeting_link }}')">
+                <i class="fas fa-video"></i> انضمام
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="empty-state">
+        <i class="fas fa-calendar-times fa-2x"></i>
+        <h3>لا توجد اجتماعات مجدولة</h3>
+        <p>ابدأ بإنشاء اجتماع جديد</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
   <!-- Modal -->
   <div class="modal-overlay" id="descriptionModal" onclick="closeModal()">
     <div class="modal" onclick="event.stopPropagation()">

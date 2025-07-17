@@ -1,321 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Add New Project</title>
-        <style>
-            /* ✅ الأنماط الأساسية */
-            * {
-                box-sizing: border-box;
-                font-family: 'Segoe UI', sans-serif;
-                margin: 0;
-                padding: 0;
-            }
-    
-            body {
-                background: #f8f9fa;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 15px;
-            }
-    
-            /* ✅ تصميم النافذة المنبثقة */
-            .modal {
-                background: white;
-                width: 100%;
-                max-width: 400px;  /* ⬅️ تصغير العرض */
-                padding: 15px;  /* ⬅️ تقليل التباعد الداخلي */
-                border-radius: 12px;  /* ⬅️ تقليل الحواف */
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-                margin-top: 50px;  /* ⬅️ تقليل المسافة من الأعلى */
-            }
-    
-            h2 {
-                text-align: center;
-                color: #2c3e50;
-                font-size: 1.3rem;  /* ⬅️ تقليل حجم العنوان */
-                margin-bottom: 1rem;
-                font-weight: 600;
-            }
-    
-            /* ✅ تصغير الحقول والتسميات */
-            .form-group {
-                margin-bottom: 1rem;  /* ⬅️ تقليل المسافة بين الحقول */
-            }
-    
-            label {
-                display: block;
-                font-size: 0.8rem;  /* ⬅️ تصغير النصوص */
-                color: #4a5568;
-                margin-bottom: 0.3rem;
-                font-weight: 500;
-            }
-    
-            input, 
-            select, 
-            textarea {
-                width: 100%;
-                padding: 0.6rem;  /* ⬅️ تقليل التباعد الداخلي */
-                font-size: 0.8rem;  /* ⬅️ تصغير النص */
-                border-radius: 6px;
-                border: 1px solid #e2e8f0;
-                background: #f8fafc;
-            }
-    
-            input:focus, 
-            select:focus, 
-            textarea:focus {
-                border-color: #6a0dad;
-                box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15);
-                outline: none;
-            }
-    
-            textarea {
-                min-height: 80px;  /* ⬅️ تقليل الطول الافتراضي */
-                resize: vertical;
-            }
-    
-            /* ✅ تصميم تحميل الملفات */
-            .file-upload {
-                border: 2px dashed #cbd5e0;
-                border-radius: 6px;
-                padding: 1rem;
-                text-align: center;
-                cursor: pointer;
-                transition: 0.3s;
-                background: #f8fafc;
-            }
-    
-            .file-upload:hover {
-                border-color: #6a0dad;
-                background: rgba(106, 13, 173, 0.05);
-            }
-    
-            .file-preview {
-                margin-top: 0.5rem;
-                font-size: 0.75rem;
-                color: #4a5568;
-            }
-    
-            /* ✅ تنسيق التواريخ */
-            .date-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-                gap: 0.8rem;  /* ⬅️ تقليل المسافات بين حقول التواريخ */
-                margin-bottom: 1rem;
-            }
-    
-            /* ✅ تصغير ألوان المشروع */
-/* ✅ تنسيق كروت الألوان */
-/* ✅ تنسيق كروت الألوان */
-.color-selection {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem; /* ⬅️ تقليل المسافة بين الألوان */
-    flex-wrap: nowrap;
-    margin-top: 0.5rem;
-}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إضافة مشروع جديد</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-/* ✅ تنسيق كل كرت */
-.color-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    padding: 0.3rem; /* ⬅️ تصغير التباعد */
-    border: 2px solid transparent;
-    border-radius: 8px;
-    text-align: center;
-    transition: all 0.3s ease-in-out;
-    width: 50px; /* ⬅️ تصغير عرض الكرت */
-}
+    body {
+      background: #f8f9fa;
+      min-height: 100vh;
+      padding-top: 80px; /* ✅ ترك مسافة من الأعلى وعدم الالتصاق */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
 
-/* ✅ تصغير الدائرة الملونة */
-.color-circle {
-    width: 24px; /* ⬅️ تصغير حجم الدائرة */
-    height: 24px;
-    border-radius: 50%;
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease-in-out;
-}
+    .modal {
+      background: white;
+      width: 100%;
+      max-width: 700px;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
 
-/* ✅ تصغير النص أسفل الدائرة */
-.color-card span {
-    margin-top: 0.3rem; /* ⬅️ تقليل المسافة بين الدائرة والنص */
-    font-size: 0.7rem; /* ⬅️ تصغير النص */
-    font-weight: bold;
-    color: #333;
-}
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
 
-/* ✅ إخفاء زر الاختيار */
-.color-card input {
-    display: none;
-}
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-/* ✅ تمييز الدائرة عند التحديد */
-.color-card input:checked + .color-circle {
-    border: 2px solid black;
-    transform: scale(1.1);
-}
-    
-            /* ✅ تصغير أزرار التحكم */
-            .buttons {
-                display: flex;
-                gap: 0.8rem;
-                margin-top: 1rem;
-            }
-    
-            .btn {
-                flex: 1;
-                padding: 0.6rem 1rem;  /* ⬅️ تصغير حجم الأزرار */
-                font-size: 0.8rem;  /* ⬅️ تقليل حجم الخط */
-                border-radius: 6px;
-                border: none;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: 0.3s;
-            }
-    
-            .cancel {
-                background: #f1f5f9;
-                color: #64748b;
-            }
-    
-            .cancel:hover {
-                background: #e2e8f0;
-            }
-    
-            .add {
-                background: linear-gradient(135deg, #6a0dad, #4b0082);
-                color: white;
-                box-shadow: 0 4px 6px rgba(106, 13, 173, 0.2);
-            }
-    
-            .add:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 6px 12px rgba(106, 13, 173, 0.25);
-            }
-    
-            /* ✅ تحسين العرض على الجوال */
-            @media (max-width: 480px) {
-                .modal {
-                    padding: 12px;
-                    max-width: 90%;
-                }
-    
-                h2 {
-                    font-size: 1.2rem;
-                }
-    
-                .btn {
-                    font-size: 0.75rem;
-                    padding: 0.5rem;
-                }
-            }
-        </style>
-    </head>
+    @media (min-width: 768px) {
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      .form-group,
+      .buttons,
+      .form-group:has(.color-selection) {
+        grid-column: span 2;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: #4a5568;
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .file-upload {
+      border: 2px dashed #cbd5e0;
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      background: #f8fafc;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .file-upload:hover {
+      border-color: #4f46e5;
+      background: rgba(106, 13, 173, 0.04);
+    }
+
+    .file-preview {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: #4a5568;
+    }
+
+    .date-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .color-selection {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .color-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 0.4rem;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      text-align: center;
+      transition: all 0.3s ease-in-out;
+      width: 60px;
+    }
+
+    .color-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .color-card span {
+      margin-top: 0.3rem;
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .color-card input {
+      display: none;
+    }
+
+    .color-card input:checked + .color-circle {
+      border: 2px solid black;
+      transform: scale(1.1);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+
+    .cancel {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .cancel:hover {
+      background: #e2e8f0;
+    }
+
+    .add {
+      background: linear-gradient(135deg, #4f46e5, #9697f3);
+      color: white;
+      box-shadow: 0 4px 6px rgba(106, 13, 173, 0.2);
+    }
+
+    .add:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(106, 13, 173, 0.25);
+    }
+
+    @media (max-width: 480px) {
+      .modal {
+        padding: 15px;
+        max-width: 95%;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+      }
+
+      .btn {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+
 <body>
-    {% include 'navbar.html' %}
-    
-    <div class="modal">
-        <h2>➕ Add New Project</h2>
+{% include 'navbar.html' %}
 
-        <form method="POST" enctype="multipart/form-data" id="createProjectForm">
-            {% csrf_token %}
-            
+<div class="modal">
+    <h2>➕ إضافة مشروع جديد</h2>
+
+    <form method="POST" enctype="multipart/form-data" id="createProjectForm">
+        {% csrf_token %}
+
+        <div class="form-grid">
             <div class="form-group">
-                <label>Project Type</label>
+                <label>نوع المشروع</label>
                 {{ form.category }}
             </div>
 
             <div class="form-group">
-                <label>Project Logo</label>
-                <div class="file-upload">
-                    <input type="file" id="id_logo" name="logo" class="file-input" accept="image/*">
-                    <span>📁 Click to upload logo</span>
-                </div>
-                <div id="logo-preview" class="file-preview"></div>
-                <div id="logo-error" class="error-message" style="color: red; font-size: 0.85rem; margin-top: 5px; display: none;"></div>
-            </div>
-            
-            <div class="form-group">
-                <label>Project Name</label>
+                <label>اسم المشروع</label>
                 {{ form.name }}
             </div>
 
             <div class="form-group">
-                <label>Description</label>
+                <label>الوصف</label>
                 {{ form.description }}
             </div>
 
             <div class="form-group">
-                <label>Attachments</label>
+                <label>شعار المشروع</label>
+                <div class="file-upload">
+                    <input type="file" id="id_logo" name="logo" class="file-input" accept="image/*">
+                    <span>📁 اضغط لاختيار الشعار</span>
+                </div>
+                <div id="logo-preview" class="file-preview"></div>
+                <div id="logo-error" class="error-message" style="color: red; font-size: 0.85rem; margin-top: 5px; display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label>المرفقات</label>
                 <div class="file-upload">
                     <input type="file" id="id_attachments" name="attachments" multiple>
-                    <span>📎 Click to add attachments</span>
+                    <span>📎 اضغط لإضافة مرفقات</span>
                 </div>
                 <div id="attachments-preview" class="file-preview"></div>
             </div>
 
-            <div class="date-container">
-                <div class="form-group">
-                    <label>Start Date</label>
-                    <input type="date" id="id_start_date" name="start_date" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>End Date</label>
-                    <input type="date" id="id_end_date" name="end_date" required>
-                </div>
+            <div class="form-group">
+                <label>تاريخ البدء</label>
+                <input type="date" id="id_start_date" name="start_date" required>
             </div>
 
             <div class="form-group">
-                <label>Project Color</label>
+                <label>تاريخ الانتهاء</label>
+                <input type="date" id="id_end_date" name="end_date" required>
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+                <label>لون المشروع</label>
                 <div class="color-selection">
                     <label class="color-card">
                         <input type="radio" name="project_color" value="purple" required>
                         <div class="color-circle" style="background: #6a0dad;"></div>
-                        <span>Purple</span>
+                        <span>بنفسجي</span>
                     </label>
                     <label class="color-card">
                         <input type="radio" name="project_color" value="red">
                         <div class="color-circle" style="background: #ff4757;"></div>
-                        <span>Red</span>
+                        <span>أحمر</span>
                     </label>
                     <label class="color-card">
                         <input type="radio" name="project_color" value="blue">
                         <div class="color-circle" style="background: #1e90ff;"></div>
-                        <span>Blue</span>
+                        <span>أزرق</span>
                     </label>
                     <label class="color-card">
                         <input type="radio" name="project_color" value="green">
                         <div class="color-circle" style="background: #2ed573;"></div>
-                        <span>Green</span>
+                        <span>أخضر</span>
                     </label>
                     <label class="color-card">
                         <input type="radio" name="project_color" value="orange">
                         <div class="color-circle" style="background: #ffa502;"></div>
-                        <span>Orange</span>
+                        <span>برتقالي</span>
                     </label>
                     <label class="color-card">
                         <input type="radio" name="project_color" value="pink">
                         <div class="color-circle" style="background: #ff6b81;"></div>
-                        <span>Pink</span>
+                        <span>وردي</span>
                     </label>
                 </div>
             </div>
-            
-            <div class="buttons">
-                <button type="button" class="btn cancel" onclick="closeModal()">Cancel</button>
-                <button type="submit" class="btn add">Create Project</button>
+
+            <div class="buttons" style="grid-column: span 2;">
+                <button type="button" class="btn cancel" onclick="closeModal()">إلغاء</button>
+                <button type="submit" class="btn add">إنشاء المشروع</button>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
+</div>
+
 
     <script>
         // ✅ وظيفة إغلاق النافذة

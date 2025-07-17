@@ -109,89 +109,87 @@
     </style>
 </head>
 <body>
+{% include 'navbar.html' %}
 
-    {% include 'navbar.html' %}
-    
-    <div class="container">
-        <h1>📅 Create New Meeting</h1>
-    
-        {% if messages %}
-            {% for message in messages %}
-                <div class="messages {{ message.tags }}">
-                    {{ message|safe }}
+<div class="container">
+    <h1>📅 إنشاء اجتماع جديد</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="messages {{ message.tags }}">
+                {{ message|safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-group">
+            <label for="id_project">📁 المشروع</label>
+            {{ form.project }}
+        </div>
+
+        {% if project and form.fields.participants and form.fields.participants.queryset %}
+            <div class="form-group">
+                <label>👥 اختر المشاركين</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    {% for member in form.fields.participants.queryset %}
+                        <div style="display: flex; align-items: center; gap: 6px; background: #f9fafb; border: 1px solid #ddd; border-radius: 8px; padding: 6px 10px;">
+                            {% if member == project.owner %}
+                                <input type="checkbox" checked disabled>
+                                <span>{{ member.get_full_name|default:member.username }} (مالك المشروع)</span>
+                                <input type="hidden" name="participants" value="{{ member.id }}">
+                            {% else %}
+                                <input type="checkbox" name="participants" value="{{ member.id }}"
+                                    {% if selected_participants and member.id|stringformat:"s" in selected_participants %}checked{% endif %}>
+                                <span>{{ member.get_full_name|default:member.username }}</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
         {% endif %}
-    
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-    
-            <div class="form-group">
-                <label for="id_project">📁 Project</label>
-                {{ form.project }}
-            </div>
-    
-            {% if project and form.fields.participants and form.fields.participants.queryset %}
-                <div class="form-group">
-                    <label>👥 Select Participants</label>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                        {% for member in form.fields.participants.queryset %}
-                            <div style="display: flex; align-items: center; gap: 6px; background: #f9fafb; border: 1px solid #ddd; border-radius: 8px; padding: 6px 10px;">
-                                {% if member == project.owner %}
-                                    <input type="checkbox" checked disabled>
-                                    <span>{{ member.get_full_name|default:member.username }} (Owner)</span>
-                                    <input type="hidden" name="participants" value="{{ member.id }}">
-                                {% else %}
-                                    <input type="checkbox" name="participants" value="{{ member.id }}"
-                                        {% if selected_participants and member.id|stringformat:"s" in selected_participants %}checked{% endif %}>
-                                    <span>{{ member.get_full_name|default:member.username }}</span>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-    
-            <div class="form-group">
-                <label for="id_title">📝 Meeting Title</label>
-                {{ form.title }}
-            </div>
-    
-            <div class="form-group">
-                <label for="id_date">📅 Date</label>
-                {{ form.date }}
-            </div>
-    
-            <div class="form-group">
-                <label for="id_time">⏰ Time</label>
-                {{ form.time }}
-            </div>
-    
-            <div class="form-group">
-                <label for="id_meeting_link">🔗 Meeting Link</label>
-                {{ form.meeting_link }}
-            </div>
-    
-            <div class="form-group">
-                <label for="id_platform">💻 Platform</label>
-                {{ form.platform }}
-            </div>
-    
-            <div class="form-group">
-                <label for="id_description">🗒️ Description</label>
-                {{ form.description }}
-            </div>
-    
-            <div class="form-group">
-                <label>👤 Created by</label>
-                <input type="text" value="{{ request.user.get_full_name|default:request.user.username }}" readonly>
-            </div>
-    
-            <button type="submit" class="btn-submit">✅ Create Meeting</button>
-        </form>
-    </div>
-    
+
+        <div class="form-group">
+            <label for="id_title">📝 عنوان الاجتماع</label>
+            {{ form.title }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_date">📅 التاريخ</label>
+            {{ form.date }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_time">⏰ الوقت</label>
+            {{ form.time }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_meeting_link">🔗 رابط الاجتماع</label>
+            {{ form.meeting_link }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_platform">💻 المنصة</label>
+            {{ form.platform }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_description">🗒️ الوصف</label>
+            {{ form.description }}
+        </div>
+
+        <div class="form-group">
+            <label>👤 أنشأ بواسطة</label>
+            <input type="text" value="{{ request.user.get_full_name|default:request.user.username }}" readonly>
+        </div>
+
+        <button type="submit" class="btn-submit">✅ إنشاء الاجتماع</button>
+    </form>
+</div>    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const projectSelect = document.getElementById("id_project");

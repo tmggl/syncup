@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Navigation System</title>
+    <title>نظام التنقل الذكي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Design System */
         :root {
-            --primary-500: #9625af;
-            --primary-600: #ca2fc7;
+            --primary-500: #4f46e5;
+            --primary-600: #4f46e5;
             --surface-100: #f8fafc;
             --surface-900: #0f172a;
             --text-primary: #1e293b;
@@ -19,12 +19,11 @@
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Cairo', sans-serif;
         }
 
         body {
@@ -32,25 +31,23 @@
             color: var(--text-primary);
         }
 
-        /* Navigation Container */
         .navbar {
             position: fixed;
             top: 0;
-            left: 0;
+            right: 0;
             width: 100%;
             height: 72px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 2rem;
-            background: linear-gradient(45deg, #5e47c2, #781378);
+            background: linear-gradient(135deg, #4f46e5, #9697f3);
             backdrop-filter: blur(12px);
             box-shadow: var(--shadow-lg);
             z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* User Profile Section */
         .profile {
             display: flex;
             align-items: center;
@@ -78,7 +75,6 @@
             letter-spacing: -0.2px;
         }
 
-        /* Navigation Links */
         .nav-links {
             display: flex;
             gap: 1.5rem;
@@ -103,7 +99,7 @@
             content: '';
             position: absolute;
             bottom: 0;
-            left: 50%;
+            right: 50%;
             width: 0;
             height: 2px;
             background: var(--text-inverse);
@@ -116,10 +112,9 @@
 
         .nav-link:hover::after {
             width: 100%;
-            left: 0;
+            right: 0;
         }
 
-        /* Logout Button */
         .logout {
             background: rgba(255, 255, 255, 0.9);
             color: var(--primary-600);
@@ -141,7 +136,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        /* Mobile Navigation */
         .hamburger {
             display: none;
             color: var(--text-inverse);
@@ -165,18 +159,19 @@
             .nav-links {
                 position: fixed;
                 top: 64px;
-                left: -100%;
+                right: -100%;
                 width: 100%;
                 height: calc(100vh - 64px);
-                background: linear-gradient(135deg, #4b0082, #6a0dad);
+                background: linear-gradient(135deg, #4f46e5, #9697f3);
                 backdrop-filter: blur(15px);
                 flex-direction: column;
                 padding: 2rem;
                 gap: 1.5rem;
+                transition: all 0.3s ease;
             }
 
             .nav-links.active {
-                left: 0;
+                right: 0;
             }
 
             .nav-link {
@@ -200,13 +195,11 @@
             }
         }
 
-        /* Content Area */
         .content {
             margin-top: 6rem;
             padding: 2rem;
         }
 
-        /* Animations */
         @keyframes navItemEnter {
             from {
                 opacity: 0;
@@ -238,7 +231,7 @@
             <img src="{{ user.profile_image.url }}" 
                  class="profile__image"
                  onerror="this.onerror=null; this.src='/media/profile_pics/p.png';" 
-                 alt="User profile">
+                 alt="صورة المستخدم">
             <span class="profile__name">{{ user.username }}</span>
         </div>
 
@@ -247,37 +240,37 @@
             {% if user.role != 'expert' %}
                 <a href="{% url 'dashboard' %}" class="nav-link">
                     <i class="fas fa-chart-line"></i>
-                    <span>Dashboard</span>
+                    <span>لوحة التحكم</span>
                 </a>
                 <a href="{% url 'projects_list' %}" class="nav-link">
                     <i class="fas fa-folder-open"></i>
-                    <span>Projects</span>
+                    <span>مشاريعي</span>
                 </a>
             {% endif %}
 
             {% if user.role == 'expert' %}
                 <a href="{% url 'expert_availability_manage' %}" class="nav-link">
                     <i class="fas fa-calendar-alt"></i>
-                    <span>Availability</span>
+                    <span>مواعيدي</span>
                 </a>
                 <a href="{% url 'edit_expert_bio' %}" class="nav-link">
                     <i class="fas fa-user-edit"></i>
-                    <span>Edit Bio</span>
+                    <span>السيرة الذاتية</span>
                 </a>
             {% else %}
                 <a href="{% url 'meeting_list' %}" class="nav-link">
                     <i class="fas fa-video"></i>
-                    <span>Meetings</span>
+                    <span>الاجتماعات</span>
                 </a>
             {% endif %}
 
             <a href="{% url 'chat_list' %}" class="nav-link">
                 <i class="fas fa-comments"></i>
-                <span>Chat</span>
+                <span>المحادثات</span>
             </a>
             <a href="{% url 'settings' %}" class="nav-link">
                 <i class="fas fa-cogs"></i>
-                <span>Settings</span>
+                <span>الإعدادات</span>
             </a>
         </div>
 
@@ -285,13 +278,12 @@
             {% csrf_token %}
             <button type="submit" class="logout">
                 <i class="fas fa-sign-out-alt"></i>
-                <span class="logout__text">Logout</span>
+                <span class="logout__text">تسجيل خروج</span>
             </button>
         </form>
     </nav>
 
     <script>
-        // Mobile Navigation Toggle
         const hamburger = document.querySelector('.hamburger');
         const navLinks = document.querySelector('.nav-links');
 
@@ -299,7 +291,6 @@
             navLinks.classList.toggle('active');
         });
 
-        // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.nav-links') && 
                 !e.target.closest('.hamburger') &&
@@ -308,7 +299,6 @@
             }
         });
 
-        // Smooth scroll behavior
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 if (navLinks.classList.contains('active')) {

@@ -1,307 +1,305 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sign Up</title>
-        <style>
-            /* Modern Page Styling */
-            * {
-                box-sizing: border-box;
-            }
-    
-            body {
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-                background: linear-gradient(135deg, #f6f5f8 0%, #fcfbfd 100%);
-                color: #fff;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-            }
-    
-            .container {
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                color: #1f2937;
-                padding: 2.5rem;
-                border-radius: 1.5rem;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-                max-width: 440px;
-                width: 90%;
-                margin: 1rem;
-                transition: all 0.3s ease;
-            }
-    
-            /* 🎨 تطبيق الخط + التدرج اللوني على العنوان */
-            h1 {
-                font-size: 1.875rem;
-                font-weight: 700;
-                margin-bottom: 2rem;
-                text-align: center;
-                background: linear-gradient(45deg, #e879f9, #818cf8);
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; /* نفس الخط المستخدم في SyncUp */
-                letter-spacing: 0.5px; /* تحسين المسافات بين الحروف */
-            }
-    
-            form {
-                display: flex;
-                flex-direction: column;
-                gap: 1.25rem;
-            }
-    
-            .input-group {
-                position: relative;
-                width: 100%;
-            }
-    
-            input, select {
-                width: 100%;
-                padding: 0.875rem 1rem;
-                border: 1px solid #e5e7eb;
-                border-radius: 0.75rem;
-                font-size: 1rem;
-                transition: all 0.2s ease;
-                background: #fff;
-                height: 48px;
-            }
-    
-            input:focus, select:focus {
-                outline: none;
-                border-color: #6366f1;
-                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            }
-    
-            input::placeholder {
-                color: #9ca3af;
-            }
-    
-            select {
-                appearance: none;
-                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-                background-repeat: no-repeat;
-                background-position: right 1rem center;
-                background-size: 1rem;
-                padding-right: 2.5rem;
-            }
-    
-            button {
-                width: 100%;
-                background: linear-gradient(45deg, #e879f9, #818cf8);
-                color: white;
-                border: none;
-                padding: 1rem;
-                border-radius: 0.75rem;
-                cursor: pointer;
-                font-size: 1rem;
-                font-weight: 600;
-                transition: all 0.2s ease;
-                margin-top: 0.5rem;
-                height: 48px;
-            }
-    
-            button:hover {
-                background: #7a1a88;
-                transform: translateY(-1px);
-            }
-    
-            button:active {
-                transform: translateY(0);
-            }
-    
-            .message {
-                font-size: 0.875rem;
-                margin-top: 0.25rem;
-                display: none;
-                align-items: center;
-                gap: 0.5rem;
-            }
-    
-            .error {
-                color: #dc2626;
-            }
-    
-            .success {
-                color: #16a34a;
-            }
-    
-            .error-message {
-                background: #fee2e2;
-                color: #dc2626;
-                padding: 1rem;
-                border-radius: 0.75rem;
-                margin-bottom: 1.5rem;
-                font-size: 0.875rem;
-            }
-    
-            .error-message ul {
-                margin: 0;
-                padding-left: 1.25rem;
-            }
-    
-            a {
-                color: #5f187c;
-                text-decoration: none;
-                font-weight: 500;
-            }
-    
-            a:hover {
-                text-decoration: underline;
-            }
-    
-            @media (max-width: 480px) {
-                .container {
-                    padding: 1.5rem;
-                    border-radius: 1rem;
-                }
-    
-                h1 {
-                    font-size: 1.5rem;
-                }
-    
-                input, select {
-                    padding: 0.75rem;
-                    height: 44px;
-                }
-    
-                button {
-                    height: 44px;
-                }
-            }
-        </style>
-    </head>
-    <body>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>إنشاء حساب جديد | SyncUp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --secondary: #6366f1;
+        --accent: #10b981;
+        --dark: #1e1b4b;
+        --light: #f8fafc;
+        --gradient: linear-gradient(45deg, var(--primary), var(--secondary));
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Cairo', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #f0f4ff 100%);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: var(--dark);
+      }
+
+      .container {
+        background: #ffffff;
+        border-radius: 1.5rem;
+        padding: 3rem 2rem;
+        max-width: 460px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  background: var(--gradient);
+
+  /* دعم التدرج داخل النص مع توافق المتصفحات */
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+
+  /* لجعل النص شفافاً وتظهر الخلفية من خلفه */
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+
+  margin-bottom: 2rem;
+}
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+
+      .input-group {
+        position: relative;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        background: #fff;
+        transition: border 0.3s;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      input::placeholder {
+        color: #9ca3af;
+      }
+
+      .message {
+        font-size: 0.875rem;
+        display: none;
+        margin-top: 0.25rem;
+      }
+
+      .error {
+        color: #dc2626;
+      }
+
+      .success {
+        color: #16a34a;
+      }
+
+      button {
+        background: var(--gradient);
+        color: white;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 700;
+        border: none;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: 0.3s ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        background: #5145cd;
+      }
+
+      .error-message {
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        font-size: 0.9rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .error-message ul {
+        margin: 0;
+        padding-left: 1.25rem;
+      }
+
+      .profile-upload {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .profile-upload img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary);
+        cursor: pointer;
+      }
+
+      .profile-upload p {
+        font-size: 0.875rem;
+        color: var(--primary);
+        margin-top: 0.5rem;
+      }
+
+      a {
+        color: var(--secondary);
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 2rem 1.5rem;
+        }
+        h1 {
+          font-size: 1.6rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
     <div class="container">
-        <h1>Create New Account</h1>
-    
-        <!-- Profile Image Upload Section -->
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <label for="profileImageUpload">
-                <img id="profilePreview" src="/media/profile_pics/p.png" alt="Profile Image"
-                     style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #6366f1; cursor: pointer;">
-            </label>
-            <input type="file" id="profileImageUpload" name="profile_image" accept="image/*" style="display: none;">
-            <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #6366f1; cursor: pointer;">Click to change</p>
+      <h1>إنشاء حساب جديد</h1>
+
+      <!-- صورة البروفايل -->
+      <div class="profile-upload">
+        <label for="profileImageUpload">
+          <img id="profilePreview" src="/media/profile_pics/p.png" alt="صورة الحساب">
+        </label>
+        <input type="file" id="profileImageUpload" name="profile_image" accept="image/*" style="display: none;">
+        <p>انقر لتغيير الصورة</p>
+      </div>
+
+      <form id="registerForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="error-message">
+          <ul>
+            {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+            <li><strong>{{ field|title }}:</strong> {{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+          </ul>
         </div>
-    
-        <form id="registerForm" method="POST" enctype="multipart/form-data">  <!-- ✅ دعم تحميل الصور -->
-            {% csrf_token %}
-    
-            {% if form.errors %}
-                <div class="error-message">
-                    <ul>
-                        {% for field, errors in form.errors.items %}
-                            {% for error in errors %}
-                                <li><strong>{{ field|title }}:</strong> {{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-    
-            <div class="input-group">
-                <input type="text" id="username" name="username" placeholder="Username" required>
-                <span id="usernameMessage" class="message"></span>
-            </div>
-    
-            <div class="input-group">
-                <input type="email" id="email" name="email" placeholder="Email Address" required>
-            </div>
-    
-            <div class="input-group">
-                <input type="text" id="phone_number" name="phone_number" placeholder="Phone Number (05xxxxxxxx)" required pattern="^05\d{8}$" maxlength="10">
-                <span id="phoneMessage" class="message"></span>
-            </div>
-    
-            <div class="input-group">
-                <select name="role" required>
-                    <option value="" disabled selected>Select Role</option>
-                    <option value="expert">Expert</option>
-                    <option value="member">Member</option>
-                </select>
-            </div>
-    
-            <div class="input-group">
-                <input type="password" id="password1" name="password1" placeholder="Password" required>
-            </div>
-    
-            <div class="input-group">
-                <input type="password" id="password2" name="password2" placeholder="Confirm Password" required>
-                <span id="passwordMessage" class="message"></span>
-            </div>
-    
-            <button type="submit">Sign Up</button>
-        </form>
-    
-        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem;">
-            Already have an account? <a href="{% url 'login' %}">Log in</a>
-        </p>
+        {% endif %}
+
+        <div class="input-group">
+          <input type="text" id="username" name="username" placeholder="اسم المستخدم" required>
+          <span id="usernameMessage" class="message"></span>
+        </div>
+
+        <div class="input-group">
+          <input type="email" id="email" name="email" placeholder="البريد الإلكتروني" required>
+        </div>
+
+        <div class="input-group">
+          <input type="text" id="phone_number" name="phone_number" placeholder="رقم الجوال (05xxxxxxxx)" required pattern="^05\d{8}$" maxlength="10">
+          <span id="phoneMessage" class="message"></span>
+        </div>
+
+        <div class="input-group">
+          <select name="role" required>
+            <option value="" disabled selected>اختر نوع المستخدم</option>
+            <option value="expert">خبير</option>
+            <option value="member">عضو</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="password1" name="password1" placeholder="كلمة المرور" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="password2" name="password2" placeholder="تأكيد كلمة المرور" required>
+          <span id="passwordMessage" class="message"></span>
+        </div>
+
+        <button type="submit">تسجيل</button>
+      </form>
+
+      <p style="text-align:center; margin-top: 1.5rem; font-size: 0.9rem;">
+        لديك حساب بالفعل؟ <a href="{% url 'login' %}">تسجيل الدخول</a>
+      </p>
     </div>
 
     <script>
-        document.getElementById('registerForm').addEventListener('submit', function(event) {
-            let password1 = document.getElementById('password1').value;
-            let password2 = document.getElementById('password2').value;
-            let passwordMessage = document.getElementById('passwordMessage');
-    
-            if (password1 !== password2) {
-                passwordMessage.textContent = "Passwords do not match!";
-                passwordMessage.style.display = "flex";
-                event.preventDefault();
-            } else {
-                passwordMessage.style.display = "none";
-            }
-        });
-    
-        function checkAvailability(field, messageId, url) {
-            let value = document.getElementById(field).value;
-            let message = document.getElementById(messageId);
-    
-            if (value.length > 0) {
-                fetch(url + "?value=" + value)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exists) {
-                            message.textContent = "This " + (field === "username" ? "username" : "phone number") + " is already taken!";
-                            message.classList.add('error');
-                            message.classList.remove('success');
-                        } else {
-                            message.textContent = "Available!";
-                            message.classList.add('success');
-                            message.classList.remove('error');
-                        }
-                        message.style.display = "flex";
-                    });
-            } else {
-                message.style.display = "none";
-            }
+      document.getElementById('registerForm').addEventListener('submit', function(event) {
+        let password1 = document.getElementById('password1').value;
+        let password2 = document.getElementById('password2').value;
+        let passwordMessage = document.getElementById('passwordMessage');
+
+        if (password1 !== password2) {
+          passwordMessage.textContent = "كلمتا المرور غير متطابقتين!";
+          passwordMessage.classList.add('error');
+          passwordMessage.style.display = "block";
+          event.preventDefault();
+        } else {
+          passwordMessage.style.display = "none";
         }
-    
-        document.getElementById('username').addEventListener('input', function() {
-            checkAvailability('username', 'usernameMessage', '/users/check-username/');
-        });
-    
-        document.getElementById('phone_number').addEventListener('input', function() {
-            checkAvailability('phone_number', 'phoneMessage', '/users/check-phone/');
-        });
-    
-        // ✅ تحديث صورة البروفايل عند اختيار صورة جديدة
-        document.getElementById('profileImageUpload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profilePreview').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+      });
+
+      function checkAvailability(field, messageId, url) {
+        let value = document.getElementById(field).value;
+        let message = document.getElementById(messageId);
+
+        if (value.length > 0) {
+          fetch(url + "?value=" + value)
+            .then(response => response.json())
+            .then(data => {
+              if (data.exists) {
+                message.textContent = field === "username" ? "اسم المستخدم مستخدم مسبقًا" : "رقم الجوال مستخدم مسبقًا";
+                message.classList.add('error');
+                message.classList.remove('success');
+              } else {
+                message.textContent = "متاح";
+                message.classList.add('success');
+                message.classList.remove('error');
+              }
+              message.style.display = "block";
+            });
+        } else {
+          message.style.display = "none";
+        }
+      }
+
+      document.getElementById('username').addEventListener('input', function() {
+        checkAvailability('username', 'usernameMessage', '/users/check-username/');
+      });
+
+      document.getElementById('phone_number').addEventListener('input', function() {
+        checkAvailability('phone_number', 'phoneMessage', '/users/check-phone/');
+      });
+
+      document.getElementById('profileImageUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('profilePreview').src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
     </script>
-    </body>
+  </body>
 </html>

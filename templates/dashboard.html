@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Overview</title>
+    <title>نظرة عامة على لوحة التحكم</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #e879f9;
-            --secondary: #818cf8;
+            --primary: #4177e3;
+            --secondary: #9ca4f5;
             --success: #10b981;
             --warning: #f59e0b;
             --info: #3b82f6;
@@ -20,19 +20,18 @@
 
         body {
             background: var(--background);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Cairo', sans-serif;
         }
 
         .dashboard-container {
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
-            padding-top: 80px; /* ✅ إزاحة للأسفل لتجنب تداخل الشريط العلوي */
+            padding-top: 80px;
         }
 
-        /* ✅ ترحيب المستخدم */
         .welcome-section {
-            text-align: left;
+            text-align: right;
             margin-bottom: 2rem;
         }
 
@@ -47,7 +46,6 @@
             color: var(--text-light);
         }
 
-        /* ✅ نظام الشبكة للكروت */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -65,16 +63,15 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            text-align: left; /* ✅ محاذاة كل النصوص لليسار */
+            text-align: right;
         }
 
         .dashboard-card:hover {
             transform: translateY(-5px);
         }
 
-        /* ✅ تصميم الإحصائيات */
         .stats-card {
-            background: linear-gradient(45deg, #5e47c2, #781378);
+            background: linear-gradient(135deg, #4f46e5, #9697f3);
             color: white;
         }
 
@@ -86,7 +83,6 @@
             font-size: 16px;
         }
 
-        /* ✅ زر عرض المشاريع بمحاذاة اليسار */
         .view-projects-btn {
             background: white;
             color: var(--primary);
@@ -100,7 +96,7 @@
             margin-top: 10px;
             border: 2px solid var(--primary);
             transition: all 0.3s ease;
-            text-align: left;
+            text-align: center;
         }
 
         .view-projects-btn:hover {
@@ -108,14 +104,13 @@
             color: white;
         }
 
-        /* ✅ كرت المهام والاجتماعات */
         .task-meeting-card {
             grid-column: span 2;
             background: white;
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            text-align: left;
+            text-align: right;
         }
 
         .task-meeting-card h3 {
@@ -155,72 +150,63 @@
     </style>
 </head>
 <body>
-    {% include 'navbar.html' %}  <!-- ✅ تضمين الشريط العلوي -->
+    {% include 'navbar.html' %}
 
     <div class="dashboard-container">
-        <!-- ✅ ترحيب المستخدم -->
         <div class="welcome-section">
-            <h1>Hello, {{ user.username }} 👋</h1>
-            <p>Welcome to your professional dashboard!</p>
+            <h1>مرحبًا، {{ user.username }} 👋</h1>
+            <p>مرحبًا بك في لوحة التحكم الاحترافية الخاصة بك!</p>
         </div>
 
-        <!-- ✅ كروت الإحصائيات -->
         <div class="cards-grid">
 
-            <!-- ✅ كرت الطلبات الواردة والصادرة -->
             <div class="dashboard-card stats-card">
-                <h2>Join Requests</h2>
-                <p>📩 Received: {{ received_requests_count }}</p>
-                <p>📤 Sent: {{ sent_requests_count }}</p>
-                <a href="{% url 'received_invitations' %}" class="view-projects-btn">View Invitations</a>
+                <h2>طلبات الانضمام</h2>
+                <p>📩 المستلمة: {{ received_requests_count }}</p>
+                <p>📤 المرسلة: {{ sent_requests_count }}</p>
+                <a href="{% url 'received_invitations' %}" class="view-projects-btn">عرض الدعوات</a>
             </div>
 
-            <!-- ✅ كرت "مشاريعي" -->
             <div class="dashboard-card stats-card">
-                <h2>My Projects</h2>
+                <h2>مشاريعي</h2>
                 <p>{{ projects_count }}</p>
-                <a href="{% url 'projects_list' %}" class="view-projects-btn">View Projects</a>
+                <a href="{% url 'projects_list' %}" class="view-projects-btn">عرض المشاريع</a>
             </div>
 
-            <!-- ✅ كرت المهام الموحد -->
             <div class="dashboard-card stats-card">
-                <h2>Tasks Overview</h2>
-                <a href="{% url 'tasks_list' %}" class="view-projects-btn">View Tasks</a>
+                <h2>نظرة على المهام</h2>
+                <a href="{% url 'tasks_list' %}" class="view-projects-btn">عرض المهام</a>
             </div>
 
-            <!-- ✅ كرت تقييم المستخدم -->
             <div class="dashboard-card stats-card">
-                <h2>Your Rating</h2>
+                <h2>تقييمي</h2>
                 <p>⭐ {{ user_rating }}/5</p>
             </div>
 
-            <!-- ✅ كرت المهام والاجتماعات -->
             <div class="dashboard-card task-meeting-card">
-                <h3>Upcoming Task & Meeting</h3>
+                <h3>المهام والاجتماعات القادمة</h3>
 
-                <!-- ✅ المهمة القادمة -->
                 <div class="task-list">
-                    <h4>Task:</h4>
+                    <h4>المهمة:</h4>
                     {% if upcoming_task %}
                         <div class="task-item">
                             <span>{{ upcoming_task.title }}</span>
                             <span>{{ upcoming_task.due_date }}</span>
                         </div>
                     {% else %}
-                        <p>No tasks available.</p>
+                        <p>لا توجد مهام حالياً.</p>
                     {% endif %}
                 </div>
 
-                <!-- ✅ الاجتماع القادم -->
                 <div class="meeting-list">
-                    <h4>Meeting:</h4>
+                    <h4>الاجتماع:</h4>
                     {% if upcoming_meeting %}
                         <div class="meeting-item">
                             <span>{{ upcoming_meeting.title }}</span>
-                            <span>{{ upcoming_meeting.date|date:"M d, Y" }} - {{ upcoming_meeting.time }}</span>
+                            <span>{{ upcoming_meeting.date|date:"Y-m-d" }} - {{ upcoming_meeting.time }}</span>
                         </div>
                     {% else %}
-                        <p>No meetings available.</p>
+                        <p>لا توجد اجتماعات حالياً.</p>
                     {% endif %}
                 </div>
             </div>

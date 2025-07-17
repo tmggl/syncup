@@ -44,7 +44,7 @@
             }
     
             .filter-bar span.active {
-                background: #6a0dad;
+                background: #4f46e5;
                 color: white;
                 box-shadow: 0 4px 12px rgba(75, 0, 130, 0.3);
             }
@@ -137,14 +137,14 @@
     
             .progress {
                 height: 100%;
-                background: linear-gradient(90deg, #6a0dad, #8c43e0);
+                background: linear-gradient(135deg, #4f46e5, #9697f3); 
                 transition: width 0.4s ease;
             }
     
             .progress-text {
                 font-size: 0.9rem;
                 font-weight: 500;
-                color: #6a0dad;
+                color: #4f46e5;
                 margin-top: 5px;
             }
     
@@ -157,7 +157,7 @@
                 border-radius: 50px;
                 font-weight: 600;
                 box-shadow: 0 6px 15px rgba(75, 0, 130, 0.3);
-                background: linear-gradient(135deg, #6a0dad, #8c43e0);
+                background: linear-gradient(135deg, #4f46e5, #9697f3);
                 color: white;
                 border: none;
                 cursor: pointer;
@@ -260,153 +260,154 @@
         </style>
     </head>
         
-    <body>
-        {% include 'navbar.html' %}
+<body>
+    {% include 'navbar.html' %}
 
-    
-        <button class="project-btn" onclick="openModal()">+ New Project</button>
-    
-        <!-- ✅ Success Message Container -->                    
-        <div class="container">
-            <!-- فلاتر المشاريع -->
-            <div class="filter-bar">
-                <span class="active" onclick="filterProjects('all', this)">All</span>
-                <span onclick="filterProjects('pending', this)">Pending</span>
-                <span onclick="filterProjects('in_progress', this)">Active</span>
-                <span onclick="filterProjects('upcoming', this)">Upcoming</span>
-                <span onclick="filterProjects('completed', this)">Completed</span>
-            </div>
-            <!-- قائمة المشاريع -->
-            <div id="projects-list">
-                {% for project in projects %}
-                <div class="project-card project-{{ project.status }}" data-color="{{ project.project_color }}">
-                    <div class="project-left-bar"></div>  <!-- ✅ جزء اللون الجانبي -->
-                    <div class="project-info">
-                        <div class="project-header">
-                            <!-- ✅ إضافة شعار المشروع -->
-                            {% if project.logo %}
-                                 <img src="{{ project.logo.url }}" alt="{{ project.name }}" class="circular-image">
-                            {% else %}
-                                <img src="/static/default_logo.png" alt="Default Logo" class="project-logo">
-                            {% endif %}
-    
-                            <div class="project-name">{{ project.name }}</div>
-                            <a href="{% url 'project_detail' project.id %}" class="settings-btn">
-                                ⚙️
-                            </a>
-                        </div>
-                        
-                        <!-- ✅ عرض مالك المشروع -->
-                        <p class="owner-name">
-                            {% if project.owner.profile_image %}
-                                <img src="{{ project.owner.profile_image.url }}" alt="{{ project.owner.username }}" class="circular-image">
-                            {% else %}
-                                <img src="/static/default_avatar.png" alt="Default Avatar" class="circular-image">
-                            {% endif %}
-                            <strong>{{ project.owner.username }}</strong>
-                        </p>
-                                                    
-                        <div class="avatars">
-                            {% for member in project.members.all|slice:":3" %}
-                                {% if member.profile_image %}
-                                    <img src="{{ member.profile_image.url }}" alt="{{ member.username }}" class="circular-image">
-                                {% else %}
-                                    <img src="/static/default_avatar.png" alt="Default Avatar" class="circular-image">
-                                {% endif %}
-                            {% endfor %}
-                        </div>                                    
-                        <div class="due-date">⏳ Due: {{ project.end_date|default:"Not Specified" }}</div>
+    <button class="project-btn" onclick="openModal()">+ مشروع جديد</button>
+
+    <!-- ✅ Success Message Container -->                    
+    <div class="container">
+        <!-- فلاتر المشاريع -->
+        <div class="filter-bar">
+            <span class="active" onclick="filterProjects('all', this)">الكل</span>
+            <span onclick="filterProjects('pending', this)">قيد المراجعة</span>
+            <span onclick="filterProjects('in_progress', this)">نشطة</span>
+            <span onclick="filterProjects('upcoming', this)">قادمة</span>
+            <span onclick="filterProjects('completed', this)">مكتملة</span>
+        </div>
+
+        <!-- قائمة المشاريع -->
+        <div id="projects-list">
+            {% for project in projects %}
+            <div class="project-card project-{{ project.status }}" data-color="{{ project.project_color }}">
+                <div class="project-left-bar"></div>  <!-- ✅ جزء اللون الجانبي -->
+                <div class="project-info">
+                    <div class="project-header">
+                        <!-- ✅ إضافة شعار المشروع -->
+                        {% if project.logo %}
+                             <img src="{{ project.logo.url }}" alt="{{ project.name }}" class="circular-image">
+                        {% else %}
+                            <img src="/static/default_logo.png" alt="شعار افتراضي" class="project-logo">
+                        {% endif %}
+
+                        <div class="project-name">{{ project.name }}</div>
+                        <a href="{% url 'project_detail' project.id %}" class="settings-btn">
+                            ⚙️
+                        </a>
                     </div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress" data-progress="{{ project.progress|default:0 }}"></div>
-                        </div>
-                        <div class="progress-text">{{ project.progress|default:0 }}% Completed</div>
+                    
+                    <!-- ✅ عرض مالك المشروع -->
+                    <p class="owner-name">
+                        {% if project.owner.profile_image %}
+                            <img src="{{ project.owner.profile_image.url }}" alt="{{ project.owner.username }}" class="circular-image">
+                        {% else %}
+                            <img src="/static/default_avatar.png" alt="صورة افتراضية" class="circular-image">
+                        {% endif %}
+                        <strong>{{ project.owner.username }}</strong>
+                    </p>
+                                                
+                    <div class="avatars">
+                        {% for member in project.members.all|slice:":3" %}
+                            {% if member.profile_image %}
+                                <img src="{{ member.profile_image.url }}" alt="{{ member.username }}" class="circular-image">
+                            {% else %}
+                                <img src="/static/default_avatar.png" alt="صورة افتراضية" class="circular-image">
+                            {% endif %}
+                        {% endfor %}
+                    </div>                                    
+                    <div class="due-date">⏳ تاريخ التسليم: {{ project.end_date|default:"غير محدد" }}</div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" data-progress="{{ project.progress|default:0 }}"></div>
                     </div>
+                    <div class="progress-text">{{ project.progress|default:0 }}٪ مكتمل</div>
                 </div>
-                {% empty %}
-                <div class="empty-state">
-                    📭 No projects found
-                </div>
-                {% endfor %}
             </div>
-        <!-- نافذة الإضافة -->
-        <div class="modal-overlay" id="projectModal">
-            <div class="modal">
-                <span class="modal-close" onclick="closeModal()">×</span>
-                <div id="modal-content">
-                    <!-- محتوى النموذج سيتم تحميله هنا -->
-                </div>
+            {% empty %}
+            <div class="empty-state">
+                📭 لا توجد مشاريع
+            </div>
+            {% endfor %}
+        </div>
+
+    <!-- نافذة الإضافة -->
+    <div class="modal-overlay" id="projectModal">
+        <div class="modal">
+            <span class="modal-close" onclick="closeModal()">×</span>
+            <div id="modal-content">
+                <!-- محتوى النموذج سيتم تحميله هنا -->
             </div>
         </div>
-    
-        <script>
-            // ✅ Hide success message after 3 seconds
-            document.addEventListener("DOMContentLoaded", function () {
-                let alertBox = document.querySelector(".alert-container .alert");
-                if (alertBox) {
-                    setTimeout(() => {
-                        alertBox.style.display = "none";
-                    }, 3000);
+    </div>
+
+    <script>
+        // ✅ Hide success message after 3 seconds
+        document.addEventListener("DOMContentLoaded", function () {
+            let alertBox = document.querySelector(".alert-container .alert");
+            if (alertBox) {
+                setTimeout(() => {
+                    alertBox.style.display = "none";
+                }, 3000);
+            }
+        });
+
+        // وظائف الفلترة
+        function filterProjects(status, element) {
+            document.querySelectorAll('.filter-bar span').forEach(span => {
+                span.classList.remove("active");
+            });
+            element.classList.add("active");
+
+            const projects = document.querySelectorAll(".project-card");
+            let visibleCount = 0;
+
+            projects.forEach(project => {
+                const show = status === 'all' || 
+                           project.classList.contains(`project-${status}`);
+                project.style.display = show ? 'flex' : 'none';
+                if (show) visibleCount++;
+            });
+
+            document.getElementById('projects-list').style.display = 
+                visibleCount > 0 ? 'block' : 'none';
+        }
+
+        // إدارة النافذة المنبثقة
+        function openModal() {
+            window.location.href = "{% url 'create_project' %}";
+        }
+
+        function closeModal() {
+            document.getElementById('projectModal').style.display = 'none';
+        }
+
+        // إغلاق النافذة عند النقر خارجها
+        document.querySelector('.modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.querySelector('.modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        // تهيئة شريط التقدم
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".progress").forEach(progress => {
+                let progressValue = progress.getAttribute("data-progress");
+                if (progressValue) {
+                    progress.style.width = progressValue + "%";
                 }
             });
-    
-            // وظائف الفلترة
-            function filterProjects(status, element) {
-                document.querySelectorAll('.filter-bar span').forEach(span => {
-                    span.classList.remove("active");
-                });
-                element.classList.add("active");
-    
-                const projects = document.querySelectorAll(".project-card");
-                let visibleCount = 0;
-    
-                projects.forEach(project => {
-                    const show = status === 'all' || 
-                               project.classList.contains(`project-${status}`);
-                    project.style.display = show ? 'flex' : 'none';
-                    if (show) visibleCount++;
-                });
-    
-                document.getElementById('projects-list').style.display = 
-                    visibleCount > 0 ? 'block' : 'none';
-            }
-    
-            // إدارة النافذة المنبثقة
-            function openModal() {
-                window.location.href = "{% url 'create_project' %}";
-            }
-    
-            function closeModal() {
-                document.getElementById('projectModal').style.display = 'none';
-            }
-    
-            // إغلاق النافذة عند النقر خارجها
-            document.querySelector('.modal-overlay').addEventListener('click', (e) => {
-                if (e.target === document.querySelector('.modal-overlay')) {
-                    closeModal();
+        });
+
+        // ✅ تطبيق اللون الجانبي للمشاريع بناءً على `data-color`
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".project-card").forEach(card => {
+                let color = card.getAttribute("data-color");
+                if (color) {
+                    card.querySelector(".project-left-bar").style.backgroundColor = color;
                 }
             });
-    
-            // تهيئة شريط التقدم
-            document.addEventListener("DOMContentLoaded", function () {
-                document.querySelectorAll(".progress").forEach(progress => {
-                    let progressValue = progress.getAttribute("data-progress");
-                    if (progressValue) {
-                        progress.style.width = progressValue + "%";
-                    }
-                });
-            });
-    
-            // ✅ تطبيق اللون الجانبي للمشاريع بناءً على `data-color`
-            document.addEventListener("DOMContentLoaded", function () {
-                document.querySelectorAll(".project-card").forEach(card => {
-                    let color = card.getAttribute("data-color");
-                    if (color) {
-                        card.querySelector(".project-left-bar").style.backgroundColor = color;
-                    }
-                });
-            });
-        </script>
-    </body>
+        });
+    </script>
+</body>
 </html>  

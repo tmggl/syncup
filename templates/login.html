@@ -1,194 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SyncUp - Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2c2c75;
-            --secondary: #282432;
-            --error: #ef4444;
-            --glass: rgba(255, 255, 255, 0.1);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SyncUp - تسجيل الدخول</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --secondary: #6366f1;
+      --accent: #10b981;
+      --error: #ef4444;
+      --bg: #ffffff;
+      --card: #ffffff;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(45deg, #fafafa, #f2f0f4);
-            display: grid;
-            place-items: center;
-            padding: 20px;
-        }
+    body {
+      font-family: 'Cairo', sans-serif;
+      min-height: 100vh;
+      background: var(--bg);
+      padding: 100px 1.5rem 1.5rem; /* padding-top to account for fixed navbar */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
 
-        .container {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-            width: 100%;
-            max-width: 480px;
-            border: 1px solid rgb(83, 22, 105);
-            transition: transform 0.3s ease;
-        }
+    .container {
+      background: var(--card);
+      padding: 2.5rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      max-width: 420px;
+      border: 1px solid #e5e7eb;
+    }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
 
-        .logo span {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, #e879f9, #818cf8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .logo span {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
 
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
 
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgb(110, 4, 105);
-        }
+    .input-group i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 1rem;
+    }
 
-        input {
-            width: 100%;
-            padding: 12px 20px 12px 45px;
-            background: rgb(151, 142, 142);
-            border: 2px solid rgb(116, 116, 116);
-            border-radius: 10px;
-            color: rgb(50, 47, 47);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
+    input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 1rem;
+      background: #f9fafb;
+      transition: border 0.3s ease;
+    }
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgb(25, 22, 22);
-        }
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+    }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(45deg, #5e47c2, #781378);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+    button {
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        button:hover {
-            background: linear-gradient(45deg, var(--secondary), var(--primary));
-            box-shadow: 0 4px 15px rgba(123, 7, 136, 0.4);
-        }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+    }
 
-        .links {
-            margin-top: 1.5rem;
-            text-align: center;
-        }
+    .links {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
 
-        .links a {
-            color: rgba(90, 7, 129, 0.8);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
+    .links a {
+      color: var(--primary);
+      text-decoration: none;
+      margin: 0 0.3rem;
+    }
 
-        .links a:hover {
-            color: rgb(90, 5, 136);
-            text-decoration: underline;
-        }
+    .links a:hover {
+      text-decoration: underline;
+    }
 
-        .error-messages {
-            background: rgba(239, 68, 68, 0.15);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--error);
-            color: #be2b2b;
-            font-size: 0.9rem;
-        }
+    .error-messages {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--error);
+    }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 1.5rem;
-                margin: 0 15px;
-            }
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.5rem;
+        border-radius: 1rem;
+      }
 
-            .logo span {
-                font-size: 2rem;
-            }
+      .logo span {
+        font-size: 1.8rem;
+      }
 
-            input {
-                padding: 10px 15px 10px 40px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            button {
-                padding: 12px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+      input, button {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <span>SyncUp</span>
-        </div>
 
-        {% if messages %}
-            <div class="error-messages">
-                {% for message in messages %}
-                    {% if 'login' in message.tags %}
-                        <p>{{ message }}</p>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
+  {% include 'app_bar.html' %} <!-- ✅ استدعاء الشريط هنا بعد <body> مباشرة -->
 
-        <form method="POST">
-            {% csrf_token %}
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" name="username" placeholder="Username" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
-            <button type="submit">Sign In</button>
-        </form>
-
-        <div class="links">
-            <a href="{% url 'register' %}">Create Account</a>
-            <span style="color: rgba(255,255,255,0.3)"> | </span>
-            <a href="#">Forgot Password?</a>
-        </div>
+  <div class="container">
+    <div class="logo">
+      <span>SyncUp</span>
     </div>
+
+    {% if messages %}
+      <div class="error-messages">
+        {% for message in messages %}
+          {% if 'login' in message.tags %}
+            <p>{{ message }}</p>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="username" placeholder="اسم المستخدم" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="password" placeholder="كلمة المرور" required>
+      </div>
+      <button type="submit">تسجيل الدخول</button>
+    </form>
+
+    <div class="links">
+      <a href="{% url 'register' %}">إنشاء حساب جديد</a>
+      |
+      <a href="#">نسيت كلمة المرور؟</a>
+    </div>
+  </div>
 </body>
 </html>
