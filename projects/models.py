@@ -35,7 +35,7 @@ class Project(models.Model):
     logo = models.ImageField(upload_to='project_logos/', blank=True, null=True)  # Project logo
     project_color = models.CharField(max_length=10, choices=COLOR_CHOICES, default='blue')  # Project color
 
-    def __str__(self):
+    def __str__(self):   
         return self.name
 
     def is_manager(self, user):
